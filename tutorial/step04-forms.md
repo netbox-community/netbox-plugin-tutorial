@@ -92,5 +92,5 @@ class AccessListRuleForm(NetBoxModelForm):
 
 With our models, tables, and forms all in place, next we'll create some views to bring everything together!
 
-:arrow-right: [Step 5: Views](/tutorial/step05-views.md)
+:arrow_right: [Step 5: Views](/tutorial/step05-views.md)
 

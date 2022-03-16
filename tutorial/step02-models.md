@@ -211,13 +211,13 @@ Additionally, we've added a `key` attribute: This will allow the NetBox administ
 Now, we can reference this as the set of valid choices on the `default_action` and `action` model fields by referencing it with the `choices` keyword argument.
 
 ```python
-# AccessList
+    # AccessList
     default_action = models.CharField(
         max_length=30,
         choices=ActionChoices
     )
 
-# AccessListRule
+    # AccessListRule
     action = models.CharField(
         max_length=30,
         choices=ActionChoices
@@ -373,5 +373,5 @@ And a few rules to go with it:
 
 Excellent! We can now create access lists and rules in the database. The next few steps will work on expsoing this functionality in the NetBox user interface.
 
-:arrow-right: [Step 3: Tables](/tutorial/step03-tables.md)
+:arrow_right: [Step 3: Tables](/tutorial/step03-tables.md)
 

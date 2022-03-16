@@ -29,17 +29,14 @@ $ edit templates/netbox_access_lists/accesslist.html
 
 Although we need to create our own template, NetBox has done much of the work for us, and provides a generic template that we can easily extend. At the top of the file, add an `extends` tag:
 
-{% raw %}
 ```
 {% extends 'generic/object.html' %}
 ```
-{% endraw %}
 
 This tells the rendering engine to first load the NetBox template at `generic/object.html` and populate only the content we provide within the associated `block` tags.
 
 Let's extend the generic template's `content` block with some information about the access list.
 
-{% raw %}
 ```
 {% block content %}
   <div class="row mb-3">
@@ -72,7 +69,6 @@ Let's extend the generic template's `content` block with some information about 
   </div>
 {% endblock content %}
 ```
-{% endraw %}
 
 Here we've created Boostrap 5 row and two column elements. In the first column, we have a simple card to display the access list's name and default action, as well as the number of rules assigned to it. And below it, you'll see an `include` tag which pulls in an additional template to render any custom fields associated with the model. In the second column, we've included two more templates to render tags and comments.
 
@@ -111,15 +107,12 @@ This makes the table available to our template as the `rules_table` context vari
 
 First, we need to import the `render_table` tag from the `django-tables2` library, so that we can render the table as HTML. Add this at the top of the template, immediately below the {% raw %}`{% extends %}`{% endraw %} tag:
 
-{% raw %}
 ```
 {% load render_table from django_tables2 %}
 ```
-{% endraw %}
 
 Then, immediately above the {% raw %}`{% endblock content %}`{% endraw %} line at the end of the file, insert the following template code:
 
-{% raw %}
 ```
   <div class="row">
     <div class="col col-md-12">
@@ -132,7 +125,6 @@ Then, immediately above the {% raw %}`{% endblock content %}`{% endraw %} line a
     </div>
   </div>
 ```
-{% endraw %}
 
 After refreshing the access list view in the browser, you should now see the rules table at the bottom of the page.
 
@@ -148,7 +140,6 @@ $ edit templates/netbox_access_lists/accesslistrule.html
 
 And copy the content below:
 
-{% raw %}
 ```
 {% extends 'generic/object.html' %}
 
@@ -227,7 +218,6 @@ And copy the content below:
   </div>
 {% endblock content %}
 ```
-{% endraw %}
 
 You'll probably be able to figure out most of this for yourself by now, but here are a few details worth mentioning:
 
@@ -239,5 +229,5 @@ You'll probably be able to figure out most of this for yourself by now, but here
 
 Feel free to experiment with different layouts and content before proceeding with the next step.
 
-:arrow-right: [Step 7: Navigation](/tutorial/step07-navigation.md)
+:arrow_right: [Step 7: Navigation](/tutorial/step07-navigation.md)
 

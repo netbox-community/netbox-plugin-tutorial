@@ -15,7 +15,7 @@ Before attempting to create a plugin, please assess your personal ability. Plugi
 
 ### Contents
 
-* [Step 1: Initial Setup](/tutorial/step01-initial-setup.md) (Start here!)
+* [Step 1: Initial Setup](/tutorial/step01-initial-setup.md) :arrow_left: Start here!
 * [Step 2: Models](/tutorial/step02-models.md)
 * [Step 3: Tables](/tutorial/step03-tables.md)
 * [Step 4: Forms](/tutorial/step04-forms.md)
@@ -24,7 +24,11 @@ Before attempting to create a plugin, please assess your personal ability. Plugi
 * [Step 7: Navigation](/tutorial/step07-navigation.md)
 * [Step 8: Filter Sets](/tutorial/step08-filter-sets.md)
 * [Step 9: REST API](/tutorial/step09-rest-api.md)
-* [Step 10: GraphQL API](/tutorial/step10-graphql.md)
+* [Step 10: GraphQL API](/tutorial/step10-graphql-api.md)
+
+### Reference
+
+* [NetBox Plugin Development Documentation](https://netbox.readthedocs.io/en/feature/plugins/development/)
 
 ### Getting Help
 

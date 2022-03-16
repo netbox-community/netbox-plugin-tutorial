@@ -237,5 +237,5 @@ With all of our REST API components now in place, we should be able to make API 
 
 ![REST API - Access list rules](/images/step09-rest-api2.png)
 
-This completes the tutorial. Well done! Now you're all set to make a plugin of your own!
+:arrow_right: [Step 10: GraphQL API](/tutorial/step10-graphql-api.md)
 

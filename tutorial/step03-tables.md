@@ -78,8 +78,7 @@ class AccessListRuleTable(NetBoxTable):
         linkify=True
     )
 
-    class Meta(NetBoxTable.Meta):
-        model = AccessListRule
+    class Meta(NetBoxTable.Meta): = AccessListRule
         fields = (
             'pk', 'id', 'access_list', 'index', 'source_prefix', 'source_ports', 'destination_prefix',
             'destination_ports', 'protocol', 'action', 'description', 'actions',
@@ -92,5 +91,5 @@ class AccessListRuleTable(NetBoxTable):
 
 This should be all we need to display objects. Next, we'll define some forms to enable creating and modifying objects.
 
-:arrow-right: [Step 4: Models](/tutorial/step04-forms.md)
+:arrow_right: [Step 4: Models](/tutorial/step04-forms.md)
 

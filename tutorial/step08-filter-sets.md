@@ -122,5 +122,5 @@ If you haven't already, create a few more access lists and rules, and experiment
 
 :green_circle: **Tip:** You may notice that we did not add a form field for the model's `id` filter: This is because it is unlikely to be useful for a human utilizing the UI. However, we still want to support filtering object by their primary keys, because it _is_ very helpful for consumers of NetBox's REST API, which we'll cover next.
 
-:arrow-right: [Step 9: REST API](/tutorial/step09-rest-api.md)
+:arrow_right: [Step 9: REST API](/tutorial/step09-rest-api.md)
 

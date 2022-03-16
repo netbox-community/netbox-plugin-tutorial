@@ -81,3 +81,5 @@ You should receive a response showing the ID, name, and rules for each access li
 
 ![GraphiQL interface](/images/step10-graphiql.png)
 
+This completes the tutorial. Well done! Now you're all set to make a plugin of your own!
+

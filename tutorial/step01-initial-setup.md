@@ -6,7 +6,11 @@ Before we can begin work on our plugin, we must first ensure that we have a suit
 
 ### Install NetBox
 
-TODO
+Plugin development requires a local installation of NetBox. If you don't already have NetBox installed, please consult the [installation instructions](https://netbox.readthedocs.io/en/feature/installation/).
+
+:green_circle: **Tip:** If this installation will be for development use only, it is generally necessary to complete only up to step three in the installation guide, culminating with successfully running the NetBox development server (`manage.py runserver`).
+
+:warning: **Warning:** This guide requires NetBox v3.2 or later. Attempting to use an earlier NetBox release will not work.
 
 ### Clone the git Repository
 
@@ -14,7 +18,12 @@ Next, we'll clone the demo git repository from GitHub. First, `cd` into your pre
 
 ```bash
 $ git clone --branch step00-empty https://github.com/netbox-community/netbox-plugin-demo
-# TODO: Include git output
+Cloning into 'netbox-plugin-demo'...
+remote: Enumerating objects: 58, done.
+remote: Counting objects: 100% (58/58), done.
+remote: Compressing objects: 100% (42/42), done.
+remote: Total 58 (delta 12), reused 58 (delta 12), pack-reused 0
+Unpacking objects: 100% (58/58), done.
 ```
 
 :blue_square: **Note:** It isn't strictly required to clone the demo repository, but it will enable you to conveniently check out snapshots of the code as the lessons progress and overcome any hiccups.
@@ -143,5 +152,5 @@ You should see the development start successfully. Open NetBox in a new browser 
 
 This completes our initial setup. Now, onto the fun stuff!
 
-:arrow-right: [Step 2: Models](/tutorial/step02-models.md)
+:arrow_right: [Step 2: Models](/tutorial/step02-models.md)
 
