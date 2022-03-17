@@ -373,5 +373,9 @@ And a few rules to go with it:
 
 Excellent! We can now create access lists and rules in the database. The next few steps will work on expsoing this functionality in the NetBox user interface.
 
-:arrow_right: [Step 3: Tables](/tutorial/step03-tables.md)
+<div align="center">
+
+:arrow_left: [Step 1: Initial Setup](/tutorial/step01-initial-setup.md) | [Step 3: Tables](/tutorial/step03-tables.md) :arrow_right:
+
+</div>
 

@@ -110,5 +110,9 @@ Now we should see green "add" buttons appear next to our menu links.
 
 ![Navigation menu items with buttons](/images/step07-menu-items2.png)
 
-:arrow_right: [Step 8: Filer Sets](/tutorial/step08-filter-sets.md)
+<div align="center">
+
+:arrow_left: [Step 6: Templates](/tutorial/step06-templates.md) | [Step 8: Filter Sets](/tutorial/step08-filter-sets.md) :arrow_right:
+
+</div>
 

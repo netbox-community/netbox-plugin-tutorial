@@ -246,5 +246,9 @@ However, if you click the link to the access list object, you'll be met by a `Te
 
 :blue_square: **Note:** You might notice that the "add" view for access list rules still doesn't work, raising a `NoReverseMatch` exception. This is because we haven't yet defined the REST API backends required to support the dynamic form fields. We'll take care of this in step nine.
 
-:arrow_right: [Step 6: Templates](/tutorial/step06-templates.md)
+<div align="center">
+
+:arrow_left: [Step 4: Forms](/tutorial/step04-forms.md) | [Step 6: Templates](/tutorial/step06-templates.md) :arrow_right:
+
+</div>
 

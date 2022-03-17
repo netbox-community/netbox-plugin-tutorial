@@ -152,5 +152,9 @@ You should see the development start successfully. Open NetBox in a new browser 
 
 This completes our initial setup. Now, onto the fun stuff!
 
-:arrow_right: [Step 2: Models](/tutorial/step02-models.md)
+<div align="center">
+
+[Step 2: Models](/tutorial/step02-models.md) :arrow_right:
+
+</div>
 

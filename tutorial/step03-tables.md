@@ -91,5 +91,9 @@ class AccessListRuleTable(NetBoxTable):
 
 This should be all we need to display objects. Next, we'll define some forms to enable creating and modifying objects.
 
-:arrow_right: [Step 4: Models](/tutorial/step04-forms.md)
+<div align="center">
+
+:arrow_left: [Step 2: Models](/tutorial/step02-models.md) | [Step 4: Forms](/tutorial/step04-forms.md) :arrow_right:
+
+</div>
 

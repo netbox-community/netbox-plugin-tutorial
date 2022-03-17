@@ -83,3 +83,9 @@ You should receive a response showing the ID, name, and rules for each access li
 
 This completes the tutorial. Well done! Now you're all set to make a plugin of your own!
 
+<div align="center">
+
+:arrow_left: [Step 9: REST API](/tutorial/step09-rest-api.md)
+
+</div>
+

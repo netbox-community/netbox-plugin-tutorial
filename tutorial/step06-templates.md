@@ -229,5 +229,9 @@ You'll probably be able to figure out most of this for yourself by now, but here
 
 Feel free to experiment with different layouts and content before proceeding with the next step.
 
-:arrow_right: [Step 7: Navigation](/tutorial/step07-navigation.md)
+<div align="center">
+
+:arrow_left: [Step 5: Views](/tutorial/step05-views.md) | [Step 7: Navigation](/tutorial/step07-navigation.md) :arrow_right:
+
+</div>
 

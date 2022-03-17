@@ -237,5 +237,9 @@ With all of our REST API components now in place, we should be able to make API 
 
 ![REST API - Access list rules](/images/step09-rest-api2.png)
 
-:arrow_right: [Step 10: GraphQL API](/tutorial/step10-graphql-api.md)
+<div align="center">
+
+:arrow_left: [Step 8: Filter Sets](/tutorial/step08-filter-sets.md) | [Step 10: GraphQL API](/tutorial/step10-graphql-api.md) :arrow_right:
+
+</div>
 
