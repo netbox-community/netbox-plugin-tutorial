@@ -1,6 +1,6 @@
 # Step 10: GraphQL API
 
-In addition to its REST API, NetBox also features a [GraphQL](https://graphql.org/) API. This can be used to conveniently request arbitrary collections of data about NetBox objects. NetBox's GraphQL API is built using the [`graphene-django`](https://docs.graphene-python.org/projects/django/en/latest/) library.
+In addition to its REST API, NetBox also features a [GraphQL](https://graphql.org/) API. This can be used to conveniently request arbitrary collections of data about NetBox objects. NetBox's GraphQL API is built using the [Graphene](https://graphene-python.org/) and [`graphene-django`](https://docs.graphene-python.org/projects/django/en/latest/) library.
 
 :blue_square: **Note:** If you skipped the previous step, run `git checkout step09-rest-api`.
 
@@ -8,7 +8,7 @@ Begin by creating `graphql.py`. This will hold our object type and query classes
 
 ```bash
 $ cd netbox_access_lists/
-$ touch graphql.py
+$ edit graphql.py
 ```
 
 We'll need to import several resources. First we need Graphene's `ObjectType` class, as well as NetBox's custom `NetBoxObjectType` which inherits from it. (The latter will be used for our model types.) We also need the `ObjectField` and `ObjectListField` classes provided by NetBox for our query. And finally, import our plugin's `models` and `filtersets` modules.
@@ -22,7 +22,7 @@ from . import filtersets, models
 
 ## Create the Object Types
 
-Subclass `NetBoxObjectType` to create two object type classes, one for each of our models. Just like with the REST API serilizers, create a child `Meta` class on each defining its `model` and `fields`. However, instead of explicitly listing each supported field, in our case we can use the special value `__all__` to indicate that we want to include all available model fields. Additionally, declare `filterset_class` on `AccessListRuleType` to attach the filter set.
+Subclass `NetBoxObjectType` to create two object type classes, one for each of our models. Just like with the REST API serilizers, create a child `Meta` class on each defining its `model` and `fields`. However, instead of explicitly listing each field by name, in our case we can use the special value `__all__` to indicate that we want to include all available model fields. Additionally, declare `filterset_class` on `AccessListRuleType` to attach the filter set.
 
 ```python
 class AccessListType(NetBoxObjectType):
@@ -42,7 +42,7 @@ class AccessListRuleType(NetBoxObjectType):
 
 ## Create the Query
 
-Then we need to create our query class. Subclass Graphene's `ObjectType` class and define two "fields" for each model: an object field and a list field.
+Then we need to create our query class. Subclass Graphene's `ObjectType` class and define two fields for each model: an object field and a list field.
 
 ```python
 class Query(ObjectType):
@@ -81,7 +81,7 @@ You should receive a response showing the ID, name, and rules for each access li
 
 ![GraphiQL interface](/images/step10-graphiql.png)
 
-This completes the tutorial. Well done! Now you're all set to make a plugin of your own!
+This completes the plugin development tutorial. Well done! Now you're all set to make a plugin of your own!
 
 <div align="center">
 

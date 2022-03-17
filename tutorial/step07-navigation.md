@@ -1,6 +1,6 @@
 # Step 7: Navigation
 
-So far, we've been manually entering URLs to access our plugin's views. This obviously will not suffice for regular use, so let's see about adding some links to NetBox' navigation menu.
+So far, we've been manually entering URLs to access our plugin's views. This obviously will not suffice for regular use, so let's see about adding some links to NetBox's navigation menu.
 
 :blue_square: **Note:** If you skipped the previous step, run `git checkout step06-templates`.
 
@@ -10,7 +10,7 @@ Begin by creating `navigation.py` in the `netbox_access_lists/` directory.
 
 ```bash
 $ cd netbox_access_lists/
-$ touch navigation.py
+$ edit navigation.py
 ```
 
 We'll need to import the `PluginMenuItem` class provided by NetBox to add new menu items; do this at the top of the file.
@@ -30,7 +30,7 @@ Let's add a link to the list view for each of our models. This is done by instan
 * `link` - The name of the URL path to which we're linking
 * `link_text` - The text of the link
 
-Create two instances of `PluginMenuItem` within `menu_items:
+Create two instances of `PluginMenuItem` within `menu_items`:
 
 ```python
 menu_items = (
@@ -47,20 +47,22 @@ menu_items = (
 
 Upon reloading the page, you should see a new "Plugins" section appear at the end of the navigation menu, and below it, a section titled "NetBox Access Lists", with our two links. Navigating to either of these links will highlight the corresponding menu item.
 
+:blue_square: **Note:** If the menu items do not appear, try restarting the development server (`manage.py runserver`).
+
 ![Navigation menu items](/images/step07-menu-items1.png)
 
 That's much more convenient!
 
 ### Adding Menu Buttons
 
-While we're at it, we can add direct links to the "add" views for access lists and rules as buttons. We'll need to import two additional classes: `PluginMenuButton` and `ButtonColorChoices`.
+While we're at it, we can add direct links to the "add" views for access lists and rules as buttons. We'll need to import two additional classes at the top of `navigation.py`: `PluginMenuButton` and `ButtonColorChoices`.
 
 ```python
 from extras.plugins import PluginMenuButton, PluginMenuItem
 from utilities.choices import ButtonColorChoices
 ```
 
-`PluginMenuButton` is used similarly to `PluginMenuItem`: Create an instance and pass the necessary keyword arguments to effect a menu button. These arguments are:
+`PluginMenuButton` is used similarly to `PluginMenuItem`: Instantiate it with the necessary keyword arguments to effect a menu button. These arguments are:
 
 * `link` - The name of the URL path to which the button links
 * `title` - The text displayed when the user hovers over the button

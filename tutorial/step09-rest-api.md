@@ -1,10 +1,10 @@
 # Step 9: REST API
 
-The REST API enables powerful integration with other systems which exchange data with NetBox. It is powered by the [Django REST Framework](https://www.django-rest-framework.org/) or DRF (which is _not_ a component of Django itself). In this tutorial, we'll see how we can extend NetBox's REST API to serve our plugin.
+The REST API enables powerful integration with other systems which exchange data with NetBox. It is powered by the [Django REST Framework](https://www.django-rest-framework.org/) (DRF), which is _not_ a component of Django itself. In this tutorial, we'll see how we can extend NetBox's REST API to serve our plugin.
 
 :blue_square: **Note:** If you skipped the previous step, run `git checkout step08-filter-sets`.
 
-Our API code will live in the `api/` directory under `netbox_access_lists/`. Let's go ahead and create that as well as an `__init__.py` now:
+Our API code will live in the `api/` directory under `netbox_access_lists/`. Let's go ahead and create that as well as an `__init__.py` file now:
 
 ```bash
 $ cd netbox_access_lists/
@@ -44,11 +44,11 @@ class AccessListSerializer(NetBoxModelSerializer):
         )
 ```
 
-It's worth discussing each of the fields we've named above. `id` is the model's primary key; it should always be included with every model, as it provides a guaranteed method of uniquely identifying objects. The `display` field is built into `NetBoxModelSerializer`: It is a read-only field which returns a string representation of the object. This is useful for populating form field dropdowns, for instance.
+It's worth discussing each of the fields we've named above. `id` is the model's primary key; it should always be included with every serializer, as it provides a guaranteed method of uniquely identifying objects. The `display` field is built into `NetBoxModelSerializer`: It is a read-only field which returns a string representation of the object. This is useful for populating form field dropdowns, for instance.
 
-The `name`, `default_action`, and `comments` fields are declared on the `AccessList` model. `tags` provides access to the object's tag manager, and `custom_fields` provides access to its custom field data; both of these are provided by `NetBoxModelSerializer`. Finally, the `created` and `last_updated` are read-only fields built into `NetBoxModel`.
+The `name`, `default_action`, and `comments` fields are declared on the `AccessList` model. `tags` provides access to the object's tag manager, and `custom_fields` includes its custom field data; both of these are provided by `NetBoxModelSerializer`. Finally, the `created` and `last_updated` are read-only fields built into `NetBoxModel`.
 
-Our serializer will introspect the model to generate the necessary fields automatically, however there's one field that we need to add manually. Every serializer should include a read-only `url` field which contains the URL where the object can be reached; think of it as similar to a model's `get_absolute_url()` method. To add this, we'll use DRF's `HyperlinkedIdentityField`. Add it above the `Meta` child class:
+Our serializer will inspect the model to generate the necessary fields automatically, however there's one field that we need to add manually. Every serializer should include a read-only `url` field which contains the URL where the object can be reached; think of it as similar to a model's `get_absolute_url()` method. To add this, we'll use DRF's `HyperlinkedIdentityField`. Add it above the `Meta` child class:
 
 ```python
 class AccessListSerializer(NetBoxModelSerializer):
@@ -57,18 +57,7 @@ class AccessListSerializer(NetBoxModelSerializer):
     )
 ```
 
-When invoking the field class, we need to specify the appropriate view name. Note that this view doesn't actually exist yet; we'll create it in the next section.
-
-We also need to add the `url` field to `Meta.fields`:
-
-```python
-    class Meta:
-        model = AccessList
-        fields = (
-            'id', 'url', 'display', 'name', 'default_action', 'comments', 'tags', 'custom_fields', 'created',
-            'last_updated',
-        )
-```
+When invoking the field class, we need to specify the appropriate view name. Note that this view doesn't actually exist yet; we'll create it a bit later.
 
 Remember back in step three when we added a table column showing the number of rules assigned to each access list? That was handy. Let's add a serializer field for it too! Add this directly below the `url` field:
 
@@ -78,7 +67,7 @@ rule_count = serializers.IntegerField(read_only=True)
 
 Just as with the table column, we'll rely on our view (to be defined next) to annotate the rule count for each access list on the underlying queryset.
 
-Finally, we need to add `rule_count` to `Meta.fields`:
+Finally, we need to add both `url` and `rule_count` to `Meta.fields`:
 
 ```python
     class Meta:
@@ -97,17 +86,20 @@ We also need to create a serializer for `AccessListRule`. Add it to `serializers
 
 ```python
 class AccessListRuleSerializer(NetBoxModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail')
+    url = serializers.HyperlinkedIdentityField(
+        view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail'
+    )
 
     class Meta:
         model = AccessListRule
         fields = (
             'id', 'url', 'display', 'access_list', 'index', 'protocol', 'source_prefix', 'source_ports',
-            'destination_prefix', 'destination_ports', 'action', 'tags', 'custom_fields', 'created', 'last_updated',
+            'destination_prefix', 'destination_ports', 'action', 'tags', 'custom_fields', 'created',
+            'last_updated',
         )
 ```
 
-There's an additional consideration when referencing related objects in a serializer. By default, the serializer will return only the primary key of the related object; its numeric ID. This requires the client to make additional API requests in order to determine _any_ other information about the related object. It is convenient to provide some information about the related object, such as its name and URL, automatically. We can do this by using a _nested serializer_.
+There's an additional consideration when referencing related objects in a serializer. By default, the serializer will return only the primary key of the related object; its numeric ID. This requires the client to make additional API requests in order to determine _any_ other information about the related object. It is convenient to include on the serializer some information about the related object, such as its name and URL, automatically. We can do this by using a _nested serializer_.
 
 For instance, the `source_prefix` and `destination_prefix` fields both reference NetBox's core `ipam.Prefix` model. We can extend `AccessListRuleSerializer` to use NetBox's nested serializer for this model:
 
@@ -134,14 +126,18 @@ Then, create two nested serializer classes, one for each of our plugin's models.
 
 ```python
 class NestedAccessListSerializer(WritableNestedSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='plugins-api:netbox_access_lists-api:accesslist-detail')
+    url = serializers.HyperlinkedIdentityField(
+        view_name='plugins-api:netbox_access_lists-api:accesslist-detail'
+    )
 
     class Meta:
         model = AccessList
         fields = ('id', 'url', 'display', 'name')
 
 class NestedAccessListRuleSerializer(WritableNestedSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail')
+    url = serializers.HyperlinkedIdentityField(
+        view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail'
+    )
 
     class Meta:
         model = AccessListRule
@@ -152,7 +148,9 @@ Now we can override the `access_list` field on `AccessListRuleSerializer` to use
 
 ```python
 class AccessListRuleSerializer(NetBoxModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail')
+    url = serializers.HyperlinkedIdentityField(
+        view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail'
+    )
     access_list = NestedAccessListSerializer()
     source_prefix = NestedPrefixSerializer()
     destination_prefix = NestedPrefixSerializer()
@@ -160,7 +158,7 @@ class AccessListRuleSerializer(NetBoxModelSerializer):
 
 ## Create the Views
 
-Next, we need to create views to handle the API logic. Just as serializers are roughly analogous to forms, API views work similarly to the UI views that we created in five. However, because API functionality is highly standardized, view creation is substantially simpler: We generally need only to create a single _view set_ for each model. A single view set can handle the view, add, change, and delete operations which required dedicated UI views.
+Next, we need to create views to handle the API logic. Just as serializers are roughly analogous to forms, API views work similarly to the UI views that we created in step five. However, because API functionality is highly standardized, view creation is substantially simpler: We generally need only to create a single _view set_ for each model. A view set is a single class that can handle the view, add, change, and delete operations which each require dedicated views under the UI.
 
 Start by creating `api/views.py` and importing NetBox's `NetBoxModelViewSet` class, as well as our plugin's `models` and `filtersets` modules, and our serializers.
 
@@ -191,7 +189,7 @@ class AccessListViewSet(NetBoxModelViewSet):
     serializer_class = AccessListSerializer
 ```
 
-Next, we'll add a view set for access list rules. In addition to `queryset` and `serializer_class`, we'll attach the filter set for this model as `filterset_class`. Note that we're also prefetching all related object fields in addition to tags to improve performance when listing many objects.
+Next, we'll add a view set for rules. In addition to `queryset` and `serializer_class`, we'll attach the filter set for this model as `filterset_class`. Note that we're also prefetching all related object fields in addition to tags to improve performance when listing many objects.
 
 ```python
 class AccessListRuleViewSet(NetBoxModelViewSet):
@@ -204,7 +202,7 @@ class AccessListRuleViewSet(NetBoxModelViewSet):
 
 ## Create the Endpoint URLs
 
-Finally, we'll create our API endpoint URLs. This works a bit differently from UI views: Instead of defining a series of paths, we instantiate a router and register each view set with it.
+Finally, we'll create our API endpoint URLs. This works a bit differently from UI views: Instead of defining a series of paths, we instantiate a _router_ and register each view set to it.
 
 Create `api/urls.py` and import NetBox's `NetBoxRouter` and our API views:
 
@@ -213,13 +211,13 @@ from netbox.api.routers import NetBoxRouter
 from . import views
 ```
 
-Next, we'll define an `app_name`: This will be used to resolve API view names for our plugin.
+Next, we'll define an `app_name`. This will be used to resolve API view names for our plugin.
 
 ```python
 app_name = 'netbox_access_list'
 ```
 
-Then, we create an `OrderedDefaultRouter` instance and register each view with it using our desired URL. These are the endpoints that will be available under `/api/plugins/access-lists/`.
+Then, we create a `NetBoxRouter` instance and register each view with it using our desired URL. These are the endpoints that will be available under `/api/plugins/access-lists/`.
 
 ```python
 router = NetBoxRouter()
@@ -229,9 +227,15 @@ router.register('access-list-rules', views.AccessListRuleViewSet)
 
 Finally, we expose the router's `urls` attribute as `urlpatterns` so that it will be detected by the plugins framework.
 
+```python
+urlpatterns = router.urls
+```
+
 :green_circle: **Tip:** The base URL for our plugin's REST API endpoints is determined by the `base_url` attribute of the plugin config class that we created in step one.
 
-With all of our REST API components now in place, we should be able to make API requests. (Note that you'll need to provision a token first.) You can quickly verify that our endpoints are working properly by navigating to <http://localhost:8000/api/plugins/access-lists/> in your browser while logged into NetBox. You should see the two available endpoints; clicking on either will return a list of objects.
+With all of our REST API components now in place, we should be able to make API requests. (Note that you may first need to provision a token for authentication.) You can quickly verify that our endpoints are working properly by navigating to <http://localhost:8000/api/plugins/access-lists/> in your browser while logged into NetBox. You should see the two available endpoints; clicking on either will return a list of objects.
+
+:blue_square: **Note:** If the REST API endpoints do not load, try restarting the development server (`manage.py runserver`).
 
 ![REST API - Root view](/images/step09-rest-api1.png)
 

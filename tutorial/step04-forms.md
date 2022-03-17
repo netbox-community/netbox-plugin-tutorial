@@ -1,6 +1,6 @@
 # Step 4: Forms
 
-Form classes generate HTML forms for the user interface, and process and validate user input. They are used in NetBox primarily to create, modify, and delete objects. We'll create a form for each of our plugin's models.
+Form classes generate HTML form elements for the user interface, and process and validate user input. They are used in NetBox primarily to create, modify, and delete objects. We'll create a form class for each of our plugin's models.
 
 :blue_square: **Note:** If you skipped the previous step, run `git checkout step03-tables`.
 
@@ -10,10 +10,10 @@ Begin by creating a file named `forms.py` in the `netbox_access_lists/` director
 
 ```bash
 $ cd netbox_access_lists/
-$ touch forms.py
+$ edit forms.py
 ```
 
-At the top of the file, we'll import NetBox's `NetBoxModelForm` class, which will serve as the parent class for our forms. We'll also import our plugin's models.
+At the top of the file, we'll import NetBox's `NetBoxModelForm` class, which will serve as the base class for our forms. We'll also import our plugin's models.
 
 ```python
 from netbox.forms import NetBoxModelForm
@@ -22,7 +22,7 @@ from .models import AccessList, AccessListRule
 
 ### AccessListForm
 
-Create a class named `AccessListForm`, subclassing `NetBoxModelForm`. Under this class, define a `Meta` subclass defining the form's `model` and `fields`. Notice that the `fields` list also includes `tags`: Tag assignment is handled by `NetBoxModel`, so we didn't need to add it to our model in step two.
+Create a class named `AccessListForm`, subclassing `NetBoxModelForm`. Under this class, define a `Meta` subclass defining the form's `model` and `fields`. Notice that the `fields` list also includes `tags`: Tag assignment is handled by `NetBoxModel` automatically, so we didn't need to add it to our model in step two.
 
 ```python
 class AccessListForm(NetBoxModelForm):
@@ -32,11 +32,11 @@ class AccessListForm(NetBoxModelForm):
         fields = ('name', 'default_action', 'comments', 'tags')
 ```
 
-This alone is sufficient for our first model, but we can make on tweak: Instead of the default field that Django will generate for the `comments` model field, we can use NetBox's purpose-built `CommentField`. (This handles some largely cosmetic details like setting a `help_text` and adjusting the field's layout.) To do this, simply import the `CommentField` class and override the form field:
+This alone is sufficient for our first model, but we can make one tweak: Instead of the default field that Django will generate for the `comments` model field, we can use NetBox's purpose-built `CommentField` class. (This handles some largely cosmetic details like setting a `help_text` and adjusting the field's layout.) To do this, simply import the `CommentField` class and override the form field:
 
 ```python
 from utilities.forms.fields import CommentField
-
+# ...
 class AccessListForm(NetBoxModelForm):
     comments = CommentField()
 
@@ -75,7 +75,7 @@ from utilities.forms.fields import CommentField, DynamicModelChoiceField
 from .models import AccessList, AccessListRule
 ```
 
-Next, we override the three relevant fields on the form class, instantiating `DynamicModelChoiceField` with the appropriate `queryset` value for each. (Be sure to keep in place the `Meta` class we already defined.)
+Then, we override the three relevant fields on the form class, instantiating `DynamicModelChoiceField` with the appropriate `queryset` value for each. (Be sure to keep in place the `Meta` class we already defined.)
 
 ```python
 class AccessListRuleForm(NetBoxModelForm):

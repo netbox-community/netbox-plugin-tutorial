@@ -76,9 +76,7 @@ Back in the project's root (one level up from `__init__.py`), create a file name
 Manage simple access control lists in NetBox
 ```
 
-You'll notice that our reference repo names this file `README.md`: The `md` extension tells tools which support it to render the file as Markdown for better readability.
-
-:warning: **Warning:** Be sure to create this file in the project root and _not_ within the `netbox_access_lists` directory.
+:green_circle: **Tip:** You'll notice that we've given our `README` file a `md` extension. This tells tools which support it to render the file as Markdown for better readability.
 
 ## Install the Plugin
 
@@ -93,7 +91,6 @@ setup(
     name='netbox-access-lists',
     version='0.1',
     description='An example NetBox plugin',
-    license='Apache 2.0',
     install_requires=[],
     packages=find_packages(),
     include_package_data=True,
@@ -101,9 +98,9 @@ setup(
 )
 ```
 
-:warning: **Warning:** Be sure to create this file in the project root and _not_ within the `netbox_access_lists` directory.
+:warning: **Warning:** Be sure to create `setup.py` in the project root and _not_ within the `netbox_access_lists` directory.
 
-This file will call the `setup()` function provided by `setuptools` to install our code. There are plenty of additional arguments that can be passed, but for our example this is sufficient.
+This file will call the `setup()` function provided by Python's [`setuptools`](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/) library to install our code. There are plenty of additional arguments that can be passed, but for our example this is sufficient.
 
 :green_circle: **Tip:** There are alternative methods for installing Python code which work just as well; free free to use your preferred approach. Just be aware that this guide assumes the use of `setuptools` and adjust accordingly.
 
@@ -146,7 +143,7 @@ Save the file and run the NetBox development server (if not already running):
 $ python netbox/manage.py runserver
 ```
 
-You should see the development start successfully. Open NetBox in a new browser window, log in as a superuser, and navigate to the admin UI. Under **System > Installed Plugins** you should see our plugin listed.
+You should see the development server start successfully. Open NetBox in a new browser window, log in as a superuser, and navigate to the admin UI. Under **System > Installed Plugins** you should see our plugin listed.
 
 ![Django admin UI: Plugins list](/images/step01-django-admin-plugins.png)
 

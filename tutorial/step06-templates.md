@@ -1,8 +1,8 @@
 # Step 6: Templates
 
-Templates are responsible for rendering HTML content for NetBox views. Each template exists as a file with a mix of HTML content and template code. Generally speaking, each model in a NetBox plugin must have its own template. Templates may also be created or customized for other views, but NetBox provides these natively.
+Templates are responsible for rendering HTML content for NetBox views. Each template exists as a file with a mix of HTML and template code. Generally speaking, each model in a NetBox plugin must have its own template. Templates may also be created or customized for other views, but the default templates NetBox provides are suitable in most cases.
 
-NetBox's rendering backend uses the [Django Template Language](https://docs.djangoproject.com/en/stable/topics/templates/) (DTL). It will immediately look very familiar if you've used [Jinja2](https://jinja2docs.readthedocs.io/en/stable/), but be aware that there are some important differences between the two. Generally, DTL is much more limited in the types of logic it can execute: Directly calling object methods, for instance, is not possible. Be sure to study the Django documentation before attempting to create any complex templates.
+NetBox's rendering backend uses the [Django Template Language](https://docs.djangoproject.com/en/stable/topics/templates/) (DTL). It will immediately look very familiar if you've used [Jinja2](https://jinja2docs.readthedocs.io/en/stable/), but be aware that there are some important differences between the two. Generally, DTL is much more limited in the types of logic it can execute: Directly executing Python code, for instance, is not possible. Be sure to study the Django documentation before attempting to create any complex templates.
 
 :blue_square: **Note:** If you skipped the previous step, run `git checkout step05-views`.
 
@@ -15,9 +15,9 @@ $ cd netbox_access_lists/
 $ mkdir -p templates/netbox_access_lists/
 ```
 
-The template files will reside in this directory. Default templates are provided for all generic views except for `ObjectView`. We'll need to create templates for our `AccessListView` and `AccessListRuleView` views.
+The template files will reside in this directory. Default templates are provided for all generic views except for `ObjectView`, so we'll need to create templates for our `AccessListView` and `AccessListRuleView` views.
 
-By default, `ObjectView` subclasses will look for a template bearing the name of the associated model. For instance, `AccessListView` will look for `accesslist.html`. This can be overriden by setting `template_name` on the view, but this behavior is suitable for our purposes.
+By default, each `ObjectView` subclass will look for a template bearing the name of its associated model. For instance, `AccessListView` will look for `accesslist.html`. This can be overriden by setting `template_name` on the view, but this behavior is suitable for our purposes.
 
 ## Create the AccessList Template
 
@@ -33,7 +33,7 @@ Although we need to create our own template, NetBox has done much of the work fo
 {% extends 'generic/object.html' %}
 ```
 
-This tells the rendering engine to first load the NetBox template at `generic/object.html` and populate only the content we provide within the associated `block` tags.
+This tells the rendering engine to first load the NetBox template at `generic/object.html` and populate only the content we provide within `block` tags.
 
 Let's extend the generic template's `content` block with some information about the access list.
 
@@ -70,19 +70,21 @@ Let's extend the generic template's `content` block with some information about 
 {% endblock content %}
 ```
 
-Here we've created Boostrap 5 row and two column elements. In the first column, we have a simple card to display the access list's name and default action, as well as the number of rules assigned to it. And below it, you'll see an `include` tag which pulls in an additional template to render any custom fields associated with the model. In the second column, we've included two more templates to render tags and comments.
+Here we've created a Boostrap 5 row and two column elements. In the first column, we have a simple card to display the access list's name and default action, as well as the number of rules assigned to it. And below it, you'll see an `include` tag which pulls in an additional template to render any custom fields associated with the model. In the second column, we've included two more templates to render tags and comments.
 
 :green_circle: **Tip:** If you're not sure how best to construct the page's layout, there are plenty of examples to reference within NetBox's core templates.
 
 Let's take a look at our new template! Navigate to the list view again (at <http://localhost:8000/plugins/netbox-access-lists/access-lists/>), and follow the link through to a particular access list. You should see something like the image below.
 
+:blue_square: **Note:** If NetBox complains that the template still does not exist, you may need to manually restart the development server (`manage.py runserver`).
+
 ![Access list view](/images/step06-accesslist1.png)
 
-This is nice, but it would be handy to include the access list's assigned rules as well.
+This is nice, but it would be handy to include the access list's assigned rules on the page as well.
 
-### Add Rules Table
+### Add a Rules Table
 
-To include the access list rules, we'll need to provide additional _context data_ under the view. Open `views.py` and find the `AccessListView` class. Define a `get_extra_context()` on this class per the code below.
+To include the access list rules, we'll need to provide additional _context data_ under the view. Open `views.py` and find the `AccessListView` class. (It should be the first class defined.) Add a `get_extra_context()` method to this class per the code below.
 
 ```python
 class AccessListView(generic.ObjectView):
@@ -105,13 +107,13 @@ This method does three things:
 
 This makes the table available to our template as the `rules_table` context variable. Let's add it to our template.
 
-First, we need to import the `render_table` tag from the `django-tables2` library, so that we can render the table as HTML. Add this at the top of the template, immediately below the {% raw %}`{% extends %}`{% endraw %} tag:
+First, we need to import the `render_table` tag from the `django-tables2` library, so that we can render the table as HTML. Add this at the top of the template, immediately below the `{% extends 'generic/object.html' %}` line:
 
 ```
 {% load render_table from django_tables2 %}
 ```
 
-Then, immediately above the {% raw %}`{% endblock content %}`{% endraw %} line at the end of the file, insert the following template code:
+Then, immediately above the `{% endblock content %}` line at the end of the file, insert the following template code:
 
 ```
   <div class="row">
@@ -219,11 +221,11 @@ And copy the content below:
 {% endblock content %}
 ```
 
-You'll probably be able to figure out most of this for yourself by now, but here are a few details worth mentioning:
+You'll probably be able to tell at this point what most of the above template code does, but here are a few details worth mentioning:
 
 * The URL for the rule's parent access list is retrieved by calling `object.access_list.get_absolute_url()` (the method we added in step five), _without_ the parentheses (a distinction of DTL). This method is used for related prefixes as well.
 * NetBox's `placeholder` filter is applied to the rule's description. (This renders a &mdash; for empty fields.)
-* The `protocol` and `action` are rendered by calling e.g. `object.get_protocol_display()` (again without the parentheses). This is a [Django convention](https://docs.djangoproject.com/en/stable/ref/models/instances/#extra-instance-methods) for static choice fields to return the human-friendly label rather than the raw value.
+* The `protocol` and `action` attributes are rendered by calling e.g. `object.get_protocol_display()` (again without the parentheses). This is a [Django convention](https://docs.djangoproject.com/en/stable/ref/models/instances/#extra-instance-methods) for static choice fields to return the human-friendly label rather than the raw value.
 
 ![Access list rule view](/images/step06-accesslistrule.png)
 
