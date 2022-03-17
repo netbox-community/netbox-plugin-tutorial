@@ -239,12 +239,37 @@ class ProtocolChoices(ChoiceSet):
 Then, add the `choices` keyword argument to the `protocol` field:
 
 ```python
-# AccessListRule
+    # AccessListRule
     protocol = models.CharField(
         max_length=30,
         choices=ProtocolChoices,
         blank=True
     )
+```
+
+### Add Choice Color Methods
+
+Now that we've defined choices for some of our model fields, we'll need to provide a method for returning the appropriate color for a selected choice. This works similar to Django's `get_FOO_display()` methods, but returns a color (defined on the field's `ChoiceSet`) rather than a label. This method will be called e.g. when displaying the field in a table.
+
+Let's add a `get_default_action_color()` method on `AccessList`:
+
+```python
+class AccessList(NetBoxModel):
+    # ...
+    def get_default_action_color(self):
+        return ActionChoices.colors.get(self.default_action)
+```
+
+We also need to add methods for `protocol` and `action` on `AccessListRule`:
+
+```python
+class AccessListRule(NetBoxModel):
+    # ...
+    def get_protocol_color(self):
+        return ProtocolChoices.colors.get(self.protocol)
+
+    def get_action_color(self):
+        return ActionChoices.colors.get(self.action)
 ```
 
 ## Create Schema Migrations

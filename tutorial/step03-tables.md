@@ -15,12 +15,12 @@ $ cd netbox_access_lists/
 $ edit tables.py
 ```
 
-At the top of this file, import the `django-tables2` library, as well as NetBox's `NetBoxTable` class. The latter will serve as the base class for our tables. We'll also import our plugin's models from `models.py`.
+At the top of this file, import the `django-tables2` library. This will provide the column classes for fields we wish to customize. We'll also import NetBox's `NetBoxTable` class, which will serve as the base class for our tables, and `ChoiceFieldColumn`. Finally we import our plugin's models from `models.py`.
 
 ```python
 import django_tables2 as tables
 
-from netbox.tables import NetBoxTable
+from netbox.tables import NetBoxTable, ChoiceFieldColumn
 from .models import AccessList, AccessListRule
 ```
 
@@ -50,6 +50,12 @@ class AccessListTable(NetBoxTable):
     )
 ```
 
+Also, recall that the `default_action` field on the `AccessList` model is a choice field, with a color assigned to each choice. To display these values, we'll use NetBox's `ChoiceFieldColumn` class.
+
+```python
+    default_action = ChoiceFieldColumn()
+```
+
 It would also be nice to include a count showing the number of rules each access list has assigned to it. We can add a custom column named `rule_count` to show this. (The data for this column will be annotated by the view; more on this in step five.) We'll also need to add this column to our `fields` and (optionally) `default_columns` under the `Meta` subclass. Our finished table should look like this:
 
 ```python
@@ -57,6 +63,7 @@ class AccessListTable(NetBoxTable):
     name = tables.Column(
         linkify=True
     )
+    default_action = ChoiceFieldColumn()
     rule_count = tables.Column()
 
     class Meta(NetBoxTable.Meta):
@@ -67,7 +74,7 @@ class AccessListTable(NetBoxTable):
 
 ### AccessListRuleTable
 
-We'll also create a table for our `AccessListRule` model using the same approach as above. In this case, we don't need to add any custom columns, but we do want to linkify the `access_list` and `index` columns. The former will link to the parent access list, and the latter will link to the individual rule.
+We'll also create a table for our `AccessListRule` model using the same approach as above. Start by linkifying the `access_list` and `index` columns. The former will link to the parent access list, and the latter will link to the individual rule. We also want to declare `protocol` and `action` as `ChoiceFieldColumn` instances.
 
 ```python
 class AccessListRuleTable(NetBoxTable):
@@ -77,6 +84,8 @@ class AccessListRuleTable(NetBoxTable):
     index = tables.Column(
         linkify=True
     )
+    protocol = ChoiceFieldColumn()
+    action = ChoiceFieldColumn()
 
     class Meta(NetBoxTable.Meta):
         model = AccessListRule
