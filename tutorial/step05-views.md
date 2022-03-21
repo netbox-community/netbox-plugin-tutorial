@@ -68,12 +68,12 @@ class AccessListListView(generic.ObjectListView):
     table = tables.AccessListTable
 ```
 
-We'll finish up with the edit and delete views for `AccessList`. Note that for the edit view, we also need to define `model_form` as the form class we created in step four.
+We'll finish up with the edit and delete views for `AccessList`. Note that for the edit view, we also need to define `form` as the form class we created in step four.
 
 ```python
 class AccessListEditView(generic.ObjectEditView):
     queryset = models.AccessList.objects.all()
-    model_form = forms.AccessListForm
+    form = forms.AccessListForm
 
 class AccessListDeleteView(generic.ObjectDeleteView):
     queryset = models.AccessList.objects.all()
@@ -97,7 +97,7 @@ class AccessListRuleListView(generic.ObjectListView):
 
 class AccessListRuleEditView(generic.ObjectEditView):
     queryset = models.AccessListRule.objects.all()
-    model_form = forms.AccessListRuleForm
+    form = forms.AccessListRuleForm
 
 
 class AccessListRuleDeleteView(generic.ObjectDeleteView):
