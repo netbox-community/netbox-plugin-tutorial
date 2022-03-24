@@ -8,6 +8,8 @@ Before we can begin work on our plugin, we must first ensure that we have a suit
 
 Plugin development requires a local installation of NetBox. If you don't already have NetBox installed, please consult the [installation instructions](https://netbox.readthedocs.io/en/feature/installation/).
 
+Be sure to enable debugging in your NetBox configuration by setting `DEBUG = True`. This will ensure that static assets can be served by the development server, and return complete tracebacks whenever there's a server error.
+
 :green_circle: **Tip:** If this installation will be for development use only, it is generally necessary to complete only up to step three in the installation guide, culminating with successfully running the NetBox development server (`manage.py runserver`).
 
 :warning: **Warning:** This guide requires NetBox v3.2 or later. Attempting to use an earlier NetBox release will not work.
