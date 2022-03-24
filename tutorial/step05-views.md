@@ -51,7 +51,7 @@ Next, we'll add a list view. For this view, we need to define both `queryset` an
 ```python
 class AccessListListView(generic.ObjectListView):
     queryset = models.AccessList.objects.all()
-    table = models.AccessListTable
+    table = tables.AccessListTable
 ```
 
 :green_circle: **Tip:** It occurs to the author that having chosen a model name that ends with "List" might be a bit confusing here. Just remember that `AccessListView` is the _detail_ (single object) view, and `AccessListListView` is the _list_ (multiple objects) view.
