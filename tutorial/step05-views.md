@@ -231,7 +231,7 @@ class AccessListRule(NetBoxModel):
 
 ## Test the Views
 
-Now for the moment of truth: Has all our work thus far yielded functional UI views? Check that the development server is running, then open a browser and navigate to <http://localhost:8000/plugins/netbox-access-lists/access-lists/>. You should see the access list list view and (if you followed in step two) a single access list named MyACL1.
+Now for the moment of truth: Has all our work thus far yielded functional UI views? Check that the development server is running, then open a browser and navigate to <http://localhost:8000/plugins/access-lists/access-lists/>. You should see the access list list view and (if you followed in step two) a single access list named MyACL1.
 
 :blue_square: **Note:** This guide assumes that you're running the Django development server locally on port 8000. If your setup is different, you'll need to adjust the link above accordingly.
 
