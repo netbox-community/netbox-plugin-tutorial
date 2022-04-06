@@ -28,7 +28,7 @@ Before attempting to create a plugin, please assess your personal ability. Plugi
 
 ### Reference
 
-* [NetBox Plugin Development Documentation](https://netbox.readthedocs.io/en/feature/plugins/development/)
+* [NetBox Plugin Development Documentation](https://netbox.readthedocs.io/en/stable/plugins/development/)
 
 ### Getting Help
 

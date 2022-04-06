@@ -6,7 +6,7 @@ Before we can begin work on our plugin, we must first ensure that we have a suit
 
 ### Install NetBox
 
-Plugin development requires a local installation of NetBox. If you don't already have NetBox installed, please consult the [installation instructions](https://netbox.readthedocs.io/en/feature/installation/).
+Plugin development requires a local installation of NetBox. If you don't already have NetBox installed, please consult the [installation instructions](https://netbox.readthedocs.io/en/stable/installation/).
 
 Be sure to enable debugging in your NetBox configuration by setting `DEBUG = True`. This will ensure that static assets can be served by the development server, and return complete tracebacks whenever there's a server error.
 
@@ -49,7 +49,7 @@ from extras.plugins import PluginConfig
 
 ### Create the PluginConfig Class
 
-We'll create a new class named `NetBoxAccessListsConfig` by subclassing `PluginConfig`. This will define all the necessary parameters that control the configuration of our plugin once installed. There are [many optional attributes](https://netbox.readthedocs.io/en/feature/plugins/development/#pluginconfig-attributes) that can be set here, but for now we only need to define a few.
+We'll create a new class named `NetBoxAccessListsConfig` by subclassing `PluginConfig`. This will define all the necessary parameters that control the configuration of our plugin once installed. There are [many optional attributes](https://netbox.readthedocs.io/en/stable/plugins/development/#pluginconfig-attributes) that can be set here, but for now we only need to define a few.
 
 ```python
 class NetBoxAccessListsConfig(PluginConfig):

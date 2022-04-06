@@ -206,7 +206,7 @@ The `CHOICES` attribute must be an iterable of two- or three-value tuples, each 
 * A human-friendly string for display
 * A color for display in the UI (optional)
 
-Additionally, we've added a `key` attribute: This will allow the NetBox administrator to replace or extend the plugin's default choices via NetBox's [`FIELD_CHOICES`](https://netbox.readthedocs.io/en/feature/configuration/optional-settings/#field_choices) configuration parameter.
+Additionally, we've added a `key` attribute: This will allow the NetBox administrator to replace or extend the plugin's default choices via NetBox's [`FIELD_CHOICES`](https://netbox.readthedocs.io/en/stable/configuration/optional-settings/#field_choices) configuration parameter.
 
 Now, we can reference this as the set of valid choices on the `default_action` and `action` model fields by passing it as the `choices` keyword argument.
 
