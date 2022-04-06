@@ -193,11 +193,11 @@ Then, below the import statements but above the model definitions, create a chil
 class ActionChoices(ChoiceSet):
     key = 'AccessListRule.action'
 
-    CHOICES = (
+    CHOICES = [
         ('permit', 'Permit', 'green'),
         ('deny', 'Deny', 'red'),
         ('reject', 'Reject (Reset)', 'orange'),
-    )
+    ]
 ```
 
 The `CHOICES` attribute must be an iterable of two- or three-value tuples, each of which defines the following:
@@ -229,11 +229,11 @@ Let's create a set of choices for a rule's `protocol` field as well. Add this be
 ```python
 class ProtocolChoices(ChoiceSet):
 
-    CHOICES = (
+    CHOICES = [
         ('tcp', 'TCP', 'blue'),
         ('udp', 'UDP', 'orange'),
         ('icmp', 'ICMP', 'purple'),
-    )
+    ]
 ```
 
 Then, add the `choices` keyword argument to the `protocol` field:
