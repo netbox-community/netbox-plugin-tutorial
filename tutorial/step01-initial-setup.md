@@ -104,7 +104,7 @@ setup(
 
 This file will call the `setup()` function provided by Python's [`setuptools`](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/) library to install our code. There are plenty of additional arguments that can be passed, but for our example this is sufficient.
 
-:green_circle: **Tip:** There are alternative methods for installing Python code which work just as well; free free to use your preferred approach. Just be aware that this guide assumes the use of `setuptools` and adjust accordingly.
+:green_circle: **Tip:** There are alternative methods for installing Python code which work just as well; feel free to use your preferred approach. Just be aware that this guide assumes the use of `setuptools` and adjust accordingly.
 
 ### Activate the Virtual Environment
 
