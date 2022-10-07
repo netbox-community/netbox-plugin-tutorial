@@ -149,7 +149,7 @@ You should see the development server start successfully. Open NetBox in a new b
 
 ![Django admin UI: Plugins list](/images/step01-django-admin-plugins.png)
 
-:green_circle: **Tip:** You can check your work at the end of each step in the tutorial by running a `git diff` against the corresponding branch. For example, at the end of step one, run `git diff step01-initial-setup` to compare your work with the completed step. This will help identify any tasks you might have missed.
+:green_circle: **Tip:** You can check your work at the end of each step in the tutorial by running a `git diff` against the corresponding branch. For example, at the end of step one, run `git diff remotes/origin/step01-initial-setup` to compare your work with the completed step. This will help identify any tasks you might have missed.
 
 This completes our initial setup. Now, onto the fun stuff!
 
