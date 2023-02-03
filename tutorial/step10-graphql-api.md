@@ -85,7 +85,7 @@ This completes the plugin development tutorial. Well done! Now you're all set to
 
 <div align="center">
 
-:arrow_left: [Step 9: REST API](/tutorial/step09-rest-api.md)
+:arrow_left: [Step 9: REST API](/tutorial/step09-rest-api.md) | [Step 11: Search](/tutorial/step11-search.md) :arrow_right:
 
 </div>
 
