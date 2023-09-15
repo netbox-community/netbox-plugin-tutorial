@@ -204,7 +204,7 @@ The `CHOICES` attribute must be an iterable of two- or three-value tuples, each 
 
 * The raw value to be stored in the database
 * A human-friendly string for display
-* A color for display in the UI (optional)
+* A color for display in the UI (optional, see [available colors](https://docs.netbox.dev/en/stable/configuration/data-validation/#field_choices))
 
 Additionally, we've added a `key` attribute: This will allow the NetBox administrator to replace or extend the plugin's default choices via NetBox's [`FIELD_CHOICES`](https://netbox.readthedocs.io/en/stable/configuration/optional-settings/#field_choices) configuration parameter.
 
