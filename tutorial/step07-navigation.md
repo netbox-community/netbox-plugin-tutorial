@@ -81,7 +81,7 @@ accesslist_buttons = [
     )
 ]
 
-accesslistrule_butons = [
+accesslistrule_buttons = [
     PluginMenuButton(
         link='plugins:netbox_access_lists:accesslistrule_add',
         title='Add',
@@ -103,7 +103,7 @@ menu_items = (
     PluginMenuItem(
         link='plugins:netbox_access_lists:accesslistrule_list',
         link_text='Access List Rules',
-        buttons=accesslistrule_butons
+        buttons=accesslistrule_buttons
     ),
 )
 ```
