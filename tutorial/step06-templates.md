@@ -74,7 +74,7 @@ Here we've created a Boostrap 5 row and two column elements. In the first column
 
 :green_circle: **Tip:** If you're not sure how best to construct the page's layout, there are plenty of examples to reference within NetBox's core templates.
 
-Let's take a look at our new template! Navigate to the list view again (at <http://localhost:8000/plugins/netbox-access-lists/access-lists/>), and follow the link through to a particular access list. You should see something like the image below.
+Let's take a look at our new template! Navigate to the list view again (at <http://localhost:8000/plugins/access-lists/access-lists/>), and follow the link through to a particular access list. You should see something like the image below.
 
 :blue_square: **Note:** If NetBox complains that the template still does not exist, you may need to manually restart the development server (`manage.py runserver`).
 
