@@ -34,7 +34,7 @@ Unpacking objects: 100% (58/58), done.
 
 ### Create `__init__.py`
 
-The `PluginConfig` class holds all the information needs to know about our plugin to install it. First, we'll create a subdirectory to hold out plugin's Python code, as well as an `__init__.py` file to hold the `PluginConfig` definition.
+The `PluginConfig` class holds all the information needs to know about our plugin to install it. First, we'll create a subdirectory to hold our plugin's Python code, as well as an `__init__.py` file to hold the `PluginConfig` definition.
 
 ```bash
 $ mkdir netbox_access_lists
