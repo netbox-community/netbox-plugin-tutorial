@@ -35,7 +35,7 @@ For each model, we need to create four views:
 
 ### AccessList Views
 
-The general pattern we'll follow here is to sublass a generic view class provided by NetBox, and define the necessary attributes. We won't need to write any substantial code because the views NetBox provides takes care of the request logic for us.
+The general pattern we'll follow here is to subclass a generic view class provided by NetBox, and define the necessary attributes. We won't need to write any substantial code because the views NetBox provides takes care of the request logic for us.
 
 Let's start with a detail view. We subclass `generic.ObjectView` and define the queryset of objects we want to display.
 
