@@ -16,7 +16,7 @@ $ edit navigation.py
 We'll need to import the `PluginMenuItem` class provided by NetBox to add new menu items; do this at the top of the file.
 
 ```python
-from extras.plugins import PluginMenuItem
+from netbox.plugins import PluginMenuItem
 ```
 
 Next, we'll create a tuple named `menu_items`. This will hold our customized `PluginMenuItem` instances.
@@ -58,8 +58,8 @@ That's much more convenient!
 While we're at it, we can add direct links to the "add" views for access lists and rules as buttons. We'll need to import two additional classes at the top of `navigation.py`: `PluginMenuButton` and `ButtonColorChoices`.
 
 ```python
-from extras.plugins import PluginMenuButton, PluginMenuItem
-from utilities.choices import ButtonColorChoices
+from netbox.plugins import PluginMenuButton, PluginMenuItem
+from netbox.choices import ButtonColorChoices
 ```
 
 `PluginMenuButton` is used similarly to `PluginMenuItem`: Instantiate it with the necessary keyword arguments to effect a menu button. These arguments are:

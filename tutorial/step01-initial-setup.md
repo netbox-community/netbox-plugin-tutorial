@@ -44,7 +44,7 @@ $ touch netbox_access_lists/__init__.py
 Next, open `__init__.py` in the text editor of your choice and import the `PluginConfig` class from NetBox at the top of the file.
 
 ```python
-from extras.plugins import PluginConfig
+from netbox.plugins import PluginConfig
 ```
 
 ### Create the PluginConfig Class
