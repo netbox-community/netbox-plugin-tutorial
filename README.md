@@ -29,7 +29,7 @@ Before attempting to create a plugin, please assess your personal ability. Plugi
 
 ### Reference
 
-* [NetBox Plugin Development Documentation](https://netbox.readthedocs.io/en/stable/plugins/development/)
+* [NetBox Plugin Development Documentation](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/)
 * [NetBox Labs Certified Plugin Program](https://github.com/netbox-community/netbox/wiki/Plugin-Certification-Program)
 
 ### Getting Help
