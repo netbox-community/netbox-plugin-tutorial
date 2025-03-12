@@ -103,7 +103,7 @@ The protocol field is next. This will store the name of a protocol such as TCP o
     )
 ```
 
-Next we need to define a source prefix. We're going to use a foreign key field to reference an instance of NetBox's `Prefix` model within its `ipam` app. Instead of importing the model class, we can instead reference it by name. And because we want this to be an _optional_ field, we'll also set `blank=True` and `null=True`.
+Next we need to define a source prefix. We're going to use a foreign key field to reference an instance of NetBox's [`Prefix` model](https://netboxlabs.com/docs/netbox/en/stable/models/ipam/prefix/) within its `ipam` app. Instead of importing the model class, we can instead reference it by name. And because we want this to be an _optional_ field, we'll also set `blank=True` and `null=True`.
 
 ```python
     source_prefix = models.ForeignKey(
@@ -119,7 +119,7 @@ Next we need to define a source prefix. We're going to use a foreign key field t
 
 Notice above that we've defined `related_name='+'`. This tells Django not to create a reverse relationship from the `Prefix` model to the `AccessListRule` model, because it wouldn't be very useful.
 
-We also need to add a field for the source port number(s). We could use an integer field for this, however that would limit us to defining a single source port per rule. Instead, we can add an `ArrayField` to store a list of `PositiveIntegerField` values. Like `source_prefix`, this will also be an optional field, so we add `blank=True` and `null=True` as well.
+We also need to add a field for the source port number(s). We could use an integer field for this, however that would limit us to defining a single source port per rule. Instead, we can add an [`ArrayField`](https://docs.djangoproject.com/en/stable/ref/contrib/postgres/fields/#arrayfield) to store a list of `PositiveIntegerField` values. Like `source_prefix`, this will also be an optional field, so we add `blank=True` and `null=True` as well.
 
 ```python
     source_ports = ArrayField(
@@ -181,7 +181,7 @@ Looking back at our models, we see a few fields that would benefit from having p
 * Deny
 * Reject
 
-We can define a `ChoiceSet` to store these pre-defined values for the user, to avoid the hassle of manually typing the name of the desired action each time. Back at the top of `models.py`, import NetBox's `ChoiceSet` class:
+We can define a [`ChoiceSet`](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/models/#choice-sets) to store these pre-defined values for the user, to avoid the hassle of manually typing the name of the desired action each time. Back at the top of `models.py`, import NetBox's `ChoiceSet` class:
 
 ```python
 from utilities.choices import ChoiceSet
@@ -204,9 +204,9 @@ The `CHOICES` attribute must be an iterable of two- or three-value tuples, each 
 
 * The raw value to be stored in the database
 * A human-friendly string for display
-* A color for display in the UI (optional, see [available colors](https://docs.netbox.dev/en/stable/configuration/data-validation/#field_choices))
+* A color for display in the UI (optional, see [available colors](https://netboxlabs.com/docs/netbox/en/stable/configuration/data-validation/#field_choices))
 
-Additionally, we've added a `key` attribute: This will allow the NetBox administrator to replace or extend the plugin's default choices via NetBox's [`FIELD_CHOICES`](https://netbox.readthedocs.io/en/stable/configuration/optional-settings/#field_choices) configuration parameter.
+Additionally, we've added a `key` attribute: This will allow the NetBox administrator to replace or extend the plugin's default choices via NetBox's [`FIELD_CHOICES`](https://netboxlabs.com/docs/netbox/en/stable/configuration/data-validation/#field_choices) configuration parameter.
 
 Now, we can reference this as the set of valid choices on the `default_action` and `action` model fields by passing it as the `choices` keyword argument.
 
@@ -274,7 +274,7 @@ class AccessListRule(NetBoxModel):
 
 ## Create Schema Migrations
 
-Now that we have our models defined, we need to generate a schema for the PostgreSQL database. While it's possible to create the tables and constraints by hand, it's _much_ easier to employ Django's [migrations feature](https://docs.djangoproject.com/en/4.0/topics/migrations/). This will inspect our model classes and generate the necessary migration files automatically. This is a two-step process: First we generate the migration file with the `makemigrations` management command, then we run `migrate` to apply it to the live database.
+Now that we have our models defined, we need to generate a schema for the PostgreSQL database. While it's possible to create the tables and constraints by hand, it's _much_ easier to employ Django's [migrations feature](https://docs.djangoproject.com/en/stable/topics/migrations/). This will inspect our model classes and generate the necessary migration files automatically. This is a two-step process: First we generate the migration file with the `makemigrations` management command, then we run `migrate` to apply it to the live database.
 
 :warning: **Warning:** Before continuing, check that you've set `DEVELOPER=True` in NetBox's `configuration.py` file. This is necessary to disable a safeguard intended to prevent people from creating new migrations mistakenly.
 
