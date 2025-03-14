@@ -15,7 +15,7 @@ $ cd netbox_access_lists/
 $ edit tables.py
 ```
 
-At the top of this file, import the `django-tables2` library. This will provide the column classes for fields we wish to customize. We'll also import NetBox's `NetBoxTable` class, which will serve as the base class for our tables, and `ChoiceFieldColumn`. Finally we import our plugin's models from `models.py`.
+At the top of this file, import the `django-tables2` library. This will provide the column classes for fields we wish to customize. We'll also import NetBox's [`NetBoxTable`](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/tables/#netboxtable) class, which will serve as the base class for our tables, and `ChoiceFieldColumn`. Finally we import our plugin's models from `models.py`.
 
 ```python
 import django_tables2 as tables
@@ -72,6 +72,10 @@ class AccessListTable(NetBoxTable):
         default_columns = ('name', 'rule_count', 'default_action')
 ```
 
+Once our plugin is finished, the table will look like this:
+
+![Access lists table](../images/step05-accesslist-list.png)
+
 ### AccessListRuleTable
 
 We'll also create a table for our `AccessListRule` model using the same approach as above. Start by linkifying the `access_list` and `index` columns. The former will link to the parent access list, and the latter will link to the individual rule. We also want to declare `protocol` and `action` as `ChoiceFieldColumn` instances.
@@ -106,4 +110,3 @@ This should be all we need to list these objects in the UI. Next, we'll define s
 :arrow_left: [Step 2: Models](/tutorial/step02-models.md) | [Step 4: Forms](/tutorial/step04-forms.md) :arrow_right:
 
 </div>
-
