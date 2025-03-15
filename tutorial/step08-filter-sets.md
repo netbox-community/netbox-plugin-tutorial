@@ -13,7 +13,7 @@ $ cd netbox_access_lists/
 $ edit filtersets.py
 ```
 
-At the top of this file, we'll import  NetBox's `NetBoxModelFilterSet` class, which will serve as the base class for our filter set, as well as our `AccessListRule` model. (In the interest of brevity, we're only going to create a filter set for one model, but it should be clear how to replicate this approach for the `AccessList` model as well.)
+At the top of this file, we'll import NetBox's `NetBoxModelFilterSet` class, which will serve as the base class for our filter set, as well as our `AccessListRule` model. (In the interest of brevity, we're only going to create a filter set for one model, but it should be clear how to replicate this approach for the `AccessList` model as well.)
 
 ```python
 from netbox.filtersets import NetBoxModelFilterSet
@@ -41,7 +41,7 @@ This will return all rules whose description contains the queried string. Of cou
 
 ## Create a Filter Form
 
-The filter set handles the "behind the scenes" process of filtering queries, but we also need to create a form class to render the filter fields in the UI. We'll add this to `forms.py`. First, import Django's `forms` module (which will provide the field classes we need) and append `NetBoxModelFilterSetForm` to the existing import statement for `netbox.forms`:
+The filter set handles the "behind the scenes" process of filtering queries, but we also need to create a form class to render the filter fields in the UI. We'll add this to `forms.py`. First, import Django's `forms` module (which will provide the field classes we need) and append [`NetBoxModelFilterSetForm`](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/forms/#netboxmodelfiltersetform) to the existing import statement for `netbox.forms`:
 
 ```python
 from django import forms
