@@ -20,7 +20,7 @@ Serializers are somewhat analogous to forms: They control the translation of cli
 $ edit api/serializers.py
 ```
 
-At the top of this file, we need to import the `serializers` module from the `rest_framework` library, as well as NetBox's `NetBoxModelSerializer` class and our plugin's own models:
+At the top of this file, we need to import the `serializers` module from the `rest_framework` library, as well as NetBox's [`NetBoxModelSerializer`](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/rest-api/) class and our plugin's own models:
 
 ```python
 from rest_framework import serializers
@@ -104,12 +104,12 @@ There's an additional consideration when referencing related objects in a serial
 For instance, the `source_prefix` and `destination_prefix` fields both reference NetBox's core `ipam.Prefix` model. We can extend `AccessListRuleSerializer` to use NetBox's nested serializer for this model:
 
 ```python
-from ipam.api.serializers import NestedPrefixSerializer
+from ipam.api.serializers import PrefixSerializer
 # ...
 class AccessListRuleSerializer(NetBoxModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail')
-    source_prefix = NestedPrefixSerializer()
-    destination_prefix = NestedPrefixSerializer()
+    source_prefix = PrefixSerializer(nested=True)
+    destination_prefix = PrefixSerializer(nested=True)
 ```
 
 Now, our serializer will include an abridged representation of the source and/or destination prefixes for the object. We should do this with the `access_list` field as well, however we'll first need to create a nested serializer for the `AccessList` model.
@@ -152,8 +152,8 @@ class AccessListRuleSerializer(NetBoxModelSerializer):
         view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail'
     )
     access_list = NestedAccessListSerializer()
-    source_prefix = NestedPrefixSerializer()
-    destination_prefix = NestedPrefixSerializer()
+    source_prefix = PrefixSerializer(nested=True)
+    destination_prefix = PrefixSerializer(nested=True)
 ```
 
 ## Create the Views
