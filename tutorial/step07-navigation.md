@@ -13,7 +13,7 @@ $ cd netbox_access_lists/
 $ edit navigation.py
 ```
 
-We'll need to import the `PluginMenuItem` class provided by NetBox to add new menu items; do this at the top of the file.
+We'll need to import the [`PluginMenuItem`](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/navigation/#menu-items) class provided by NetBox to add new menu items; do this at the top of the file.
 
 ```python
 from extras.plugins import PluginMenuItem
@@ -55,11 +55,10 @@ That's much more convenient!
 
 ### Adding Menu Buttons
 
-While we're at it, we can add direct links to the "add" views for access lists and rules as buttons. We'll need to import two additional classes at the top of `navigation.py`: `PluginMenuButton` and `ButtonColorChoices`.
+While we're at it, we can add direct links to the "add" views for access lists and rules as buttons. We'll need to import one additional class at the top of `navigation.py`: `PluginMenuButton`.
 
 ```python
 from extras.plugins import PluginMenuButton, PluginMenuItem
-from utilities.choices import ButtonColorChoices
 ```
 
 `PluginMenuButton` is used similarly to `PluginMenuItem`: Instantiate it with the necessary keyword arguments to effect a menu button. These arguments are:
@@ -67,7 +66,6 @@ from utilities.choices import ButtonColorChoices
 * `link` - The name of the URL path to which the button links
 * `title` - The text displayed when the user hovers over the button
 * `icon_class` - CSS class name(s) indicating the icon to display
-* `color` - The button's color (choices are provided by `ButtonColorChoices`)
 
 Create these instances in `navigation.py` _above_ `menu_items`. Because each menu item expects to receive an iterable of button instances, we'll create each of these inside a list.
 
@@ -77,7 +75,6 @@ accesslist_buttons = [
         link='plugins:netbox_access_lists:accesslist_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
-        color=ButtonColorChoices.GREEN
     )
 ]
 
@@ -86,7 +83,6 @@ accesslistrule_buttons = [
         link='plugins:netbox_access_lists:accesslistrule_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
-        color=ButtonColorChoices.GREEN
     )
 ]
 ```
@@ -117,4 +113,3 @@ Now we should see green "add" buttons appear next to our menu links.
 :arrow_left: [Step 6: Templates](/tutorial/step06-templates.md) | [Step 8: Filter Sets](/tutorial/step08-filter-sets.md) :arrow_right:
 
 </div>
-
