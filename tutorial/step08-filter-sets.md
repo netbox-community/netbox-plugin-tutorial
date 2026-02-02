@@ -39,6 +39,10 @@ class AccessListRuleFilterSet(NetBoxModelFilterSet):
 
 This will return all rules whose description contains the queried string. Of course, you're free to extend this to match other fields as well, but for our purposes this should be sufficient.
 
+:warning: **Warning:** It is important that the name of the module containing the filter sets is `filtersets` and that the names of the filter set classes are identical to the name of the underlying model with `FilterSet` appended. For the model `netbox_access_lists.models.AccessList` the filter set class **must** be accessible as `netbox_access_lists.filtersets.AccessListFilterSet`.
+
+While any other naming scheme will seemingly work, there are some features of NetBox that rely on the exact naming of the filter set module and the classes. For example, GraphQL filters and selectors in dynamic model fields will not work if the naming is different.
+
 ## Create a Filter Form
 
 The filter set handles the "behind the scenes" process of filtering queries, but we also need to create a form class to render the filter fields in the UI. We'll add this to `forms.py`. First, import Django's `forms` module (which will provide the field classes we need) and append `NetBoxModelFilterSetForm` to the existing import statement for `netbox.forms`:
