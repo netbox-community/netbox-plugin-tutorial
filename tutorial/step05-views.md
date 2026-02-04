@@ -2,7 +2,7 @@
 
 Views are responsible for the business logic of your application. Generally, this means processing incoming requests, performing some action(s), and returning a response to the client. Each view typically has a URL associated with it, and can handle one or more types of HTTP requests (i.e. `GET` and/or `POST` requests).
 
-Django provides a set of [generic view classes](https://docs.djangoproject.com/en/4.0/topics/class-based-views/generic-display/) which handle much of the boilerplate code needed to process requests. NetBox likewise provides a set of view classes to simplify the creation of views for creating, editing, deleting, and viewing objects. They also introduce support for NetBox-specific features such as custom fields and change logging.
+Django provides a set of [generic view classes](https://docs.djangoproject.com/en/stable/topics/class-based-views/generic-display/) which handle much of the boilerplate code needed to process requests. NetBox likewise provides a set of view classes to simplify the creation of views for creating, editing, deleting, and viewing objects. They also introduce support for NetBox-specific features such as custom fields and change logging.
 
 In this step, we'll create a set of views for each of our plugin's models.
 
@@ -17,7 +17,7 @@ $ cd netbox_access_lists/
 $ edit views.py
 ```
 
-We'll need to import our plugin's `models`, `tables`, and `forms` modules: This is where everything we've built so far really comes together! We also need to import NetBox's generic views module, as it provides the base classes for our views.
+We'll need to import our plugin's `models`, `tables`, and `forms` modules: This is where everything we've built so far really comes together! We also need to import [NetBox's generic views](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/views/#view-classes) module, as it provides the base classes for our views.
 
 ```python
 from netbox.views import generic
@@ -56,7 +56,7 @@ class AccessListListView(generic.ObjectListView):
 
 :green_circle: **Tip:** It occurs to the author that having chosen a model name that ends with "List" might be a bit confusing here. Just remember that `AccessListView` is the _detail_ (single object) view, and `AccessListListView` is the _list_ (multiple objects) view.
 
-Before we move on to the next view, do you remember the extra column we added to `AccessListTable` in step three? That column expects to find a count of rules assigned for each access list in the queryset, named `rule_count`. Let's add this to our queryset now. We can employ Django's `Count()` function to extend the SQL query and annotate the count of associated rules. (Don't forget to add the import statement up top.)
+Before we move on to the next view, do you remember the extra column we added to `AccessListTable` in step three? That column expects to find a count of rules assigned for each access list in the queryset, named `rule_count`. Let's add this to our queryset now. We can employ Django's [`Count()`](https://docs.djangoproject.com/en/stable/ref/models/querysets/#aggregation-functions) function to extend the SQL query and annotate the count of associated rules. (Don't forget to add the import statement up top.)
 
 ```python
 from django.db.models import Count
@@ -233,13 +233,16 @@ class AccessListRule(NetBoxModel):
 
 Now for the moment of truth: Has all our work thus far yielded functional UI views? Check that the development server is running, then open a browser and navigate to <http://localhost:8000/plugins/access-lists/access-lists/>. You should see the access list list view and (if you followed in step two) a single access list named MyACL1.
 
+The first `access-lists` in the URL is the `base_url` we defined in `__init__.py`.
+The second is the path we defined in `urls.py`.
+
 :blue_square: **Note:** This guide assumes that you're running the Django development server locally on port 8000. If your setup is different, you'll need to adjust the link above accordingly.
 
 ![Access lists list view](/images/step05-accesslist-list.png)
 
 We see that our table has successfully render the `name`, `rule_count`, and `default_action` columns that we defined in step three, and the `rule_count` column shows two rules assigned as expected.
 
-If we click the "Add" button at top right, we'll be taken to the access list creation form. (Creating a new access list won'r work yet, but the form should render as seen below.)
+If we click the "Add" button at top right, we'll be taken to the access list creation form. (Creating a new access list won't work yet, but the form should render as seen below.)
 
 ![Access list creation form](/images/step05-accesslist-form.png)
 

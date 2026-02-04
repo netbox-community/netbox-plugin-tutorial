@@ -13,7 +13,7 @@ $ cd netbox_access_lists/
 $ edit forms.py
 ```
 
-At the top of the file, we'll import NetBox's `NetBoxModelForm` class, which will serve as the base class for our forms. We'll also import our plugin's models.
+At the top of the file, we'll import NetBox's [`NetBoxModelForm`](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/forms/#netboxmodelform) class, which will serve as the base class for our forms. We'll also import our plugin's models.
 
 ```python
 from netbox.forms import NetBoxModelForm
@@ -32,7 +32,7 @@ class AccessListForm(NetBoxModelForm):
         fields = ('name', 'default_action', 'comments', 'tags')
 ```
 
-This alone is sufficient for our first model, but we can make one tweak: Instead of the default field that Django will generate for the `comments` model field, we can use NetBox's purpose-built `CommentField` class. (This handles some largely cosmetic details like setting a `help_text` and adjusting the field's layout.) To do this, simply import the `CommentField` class and override the form field:
+This alone is sufficient for our first model, but we can make one tweak: Instead of the default field that Django will generate for the `comments` model field, we can use NetBox's purpose-built [`CommentField`](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/forms/#utilities.forms.fields.fields.CommentField) class. (This handles some largely cosmetic details like setting a `help_text` and adjusting the field's layout.) To do this, simply import the `CommentField` class and override the form field:
 
 ```python
 from utilities.forms.fields import CommentField
@@ -44,6 +44,10 @@ class AccessListForm(NetBoxModelForm):
         model = AccessList
         fields = ('name', 'default_action', 'comments', 'tags')
 ```
+
+Once our plugin is finished, the form will look like this:
+
+![Access lists form](../images/step05-accesslist-form.png)
 
 ### AccessListRuleForm
 
@@ -62,7 +66,7 @@ class AccessListRuleForm(NetBoxModelForm):
 
 By default, Django will create a "static" foreign key field for related objects. This renders as a dropdown list that's pre-populated with _all_ available objects. As you can imagine, in a NetBox instance with many thousands of objects this can get rather unwieldy.
 
-To avoid this, NetBox provides the `DynamicModelChoiceField` class. This renders foreign key fields using a special dynamic widget backed by NetBox's REST API. This avoids the overhead imposed by the static field, and allows the user to conveniently search for the desired object.
+To avoid this, NetBox provides the [`DynamicModelChoiceField`](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/forms/#dynamic-object-fields) class. This renders foreign key fields using a special dynamic widget backed by NetBox's REST API. This avoids the overhead imposed by the static field, and allows the user to conveniently search for the desired object.
 
 :green_circle: **Tip:** The `DynamicModelMultipleChoiceField` class is also available for many-to-many fields, which support the assignment of multiple objects.
 
@@ -97,4 +101,3 @@ With our models, tables, and forms all in place, next we'll create some views to
 :arrow_left: [Step 3: Tables](/tutorial/step03-tables.md) | [Step 5: Views](/tutorial/step05-views.md) :arrow_right:
 
 </div>
-

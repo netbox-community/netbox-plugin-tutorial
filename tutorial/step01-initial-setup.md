@@ -16,7 +16,7 @@ Be sure to enable debugging in your NetBox configuration by setting `DEBUG = Tru
 
 ### Clone the git Repository
 
-Next, we'll clone the demo git repository from GitHub. First, `cd` into your preferred location (your home directory is probably fine), then clone the repo with `git clone`. We're checking out the `init` branch, which will provide us with an empty workspace to start.
+Next, we'll clone the demo git repository from GitHub. First, `cd` into your preferred location (your home directory is probably fine), then clone the repo with `git clone`. We're checking out the `step00-empty` branch, which will provide us with an empty workspace to start.
 
 ```bash
 $ git clone --branch step00-empty https://github.com/netbox-community/netbox-plugin-demo
@@ -34,7 +34,10 @@ Unpacking objects: 100% (58/58), done.
 
 ### Create `__init__.py`
 
-The `PluginConfig` class holds all the information needs to know about our plugin to install it. First, we'll create a subdirectory to hold our plugin's Python code, as well as an `__init__.py` file to hold the `PluginConfig` definition.
+Our plugin is for managing access lists in NetBox, so we'll give it an appropriate name, such as `netbox_access_lists`.
+
+First, we'll create a subdirectory to hold our plugin's Python code, as well as an `__init__.py` file to hold the `PluginConfig` definition.
+The `PluginConfig` class holds all the information Netbox needs to know about our plugin to install it.
 
 ```bash
 $ mkdir netbox_access_lists
@@ -145,7 +148,7 @@ Save the file and run the NetBox development server (if not already running):
 $ python netbox/manage.py runserver
 ```
 
-You should see the development server start successfully. Open NetBox in a new browser window, log in as a superuser, and navigate to the admin UI. Under **System > Installed Plugins** you should see our plugin listed.
+You should see the development server start successfully. Open NetBox in a new browser window, log in as a superuser, and navigate to the admin UI. Under **Admin > System > Plugins** you should see our plugin listed.
 
 ![Django admin UI: Plugins list](/images/step01-django-admin-plugins.png)
 
@@ -158,4 +161,3 @@ This completes our initial setup. Now, onto the fun stuff!
 [Step 2: Models](/tutorial/step02-models.md) :arrow_right:
 
 </div>
-
