@@ -1,19 +1,30 @@
 # Step 2: Models
 
-In this step, we're going to define some Django models to hold our plugin's data. A model is a Python class that represents a table in the underlying PostgreSQL database; each instance of a model equates to a row in the table. We use models instead of raw SQL because interacting with Python objects is much more convenient and flexible.
+In this step, we will define some Django models to hold our plugin's data.
 
-:blue_square: **Note:** If you skipped the previous step, run `git checkout step01-initial-setup`.
+A model is a Python class that represents a table in the PostgreSQL database.
+Each instance of a model class maps to a single row in that table.
+We use models instead of raw SQL because working with Python objects is usually simpler, safer, and easier to evolve over time.
+
+:blue_square: **Note:** If you skipped the previous step, and you cloned the `netbox-plugin-demo` repository, you can catch up by running `git checkout step01-plugin-configuration`.
 
 ## Create the Models
 
-First, `cd` into the `netbox_access_lists` directory and create a file named `models.py`. This is where our model classes will be defined.
+First, change into the `netbox_access_lists` directory and create a file named `models.py`.
+This is where our model classes will live.
 
 ```bash
-$ cd netbox_access_lists
-$ edit models.py
+cd netbox_access_lists
+touch models.py
 ```
 
-At the top of the file, import Django's `models` library and NetBox's `NetBoxModel` class. The latter will serve as the base class for our plugin's models. We'll also import the PostgreSQL `ArrayField`; more on this in a bit.
+Open `models.py` in your editor and add the imports below.
+
+We import:
+
+* Django's `models` library for defining fields
+* NetBox's `NetBoxModel` base class so our models get NetBox features like custom fields, tags, and change logging
+* PostgreSQL's `ArrayField`, which we will use to store a list of ports on a rule
 
 ```python
 from django.contrib.postgres.fields import ArrayField
@@ -21,89 +32,130 @@ from django.db import models
 from netbox.models import NetBoxModel
 ```
 
-We'll create two models:
+We will create two models:
 
-* `AccessList`: This will represent an access list, with a name and one or more rules assigned to it.
-* `AccessListRule`: This will be an individual rule with source/destination IP addresses, port numbers, etc. assigned to an access list.
+* `AccessList` represents an access list, with a name and one or more rules
+* `AccessListRule` represents a single rule, including source and destination prefixes and ports, action, and optional description
 
 ### AccessList
 
-We'll need to define a few fields for our model. Each model gets a numeric primary key field (`id`) automatically, so we don't need to worry about that, but we do need to define fields for the ACL's name, default action, and optional comments.
+We'll need to define a few fields for our model.
+A field is a piece of data associated with an instance of a model and is defined using a class attribute.
+Each model gets a numeric primary key field (`id`) automatically, so we don't need to worry about that, but we do need to define fields for the ACL's name, default action, and optional comments.
 
 ```python
 class AccessList(NetBoxModel):
     name = models.CharField(
-        max_length=100
+        max_length=100,
     )
     default_action = models.CharField(
-        max_length=30
+        max_length=30,
     )
     comments = models.TextField(
-        blank=True
+        blank=True,
     )
 ```
 
-By default, model instances are ordered by their primary keys, but it would make more sense to order access lists by name. We can do that by creating a `Meta` child class and defining an `ordering` variable. (Be sure to create the `Meta` class *inside* `AccessList`, not after it.)
+By default, Django orders records by the primary key.
+For access lists, ordering by name is usually more natural.
+We can do that by adding a `Meta` class inside `AccessList`.
+
+We will also set `verbose_name`, which controls how the model name is displayed in the UI.
 
 ```python
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Access List'
 ```
 
-Finally, we'll add a `__str__()` method to control how an instance is coerced to a string. We'll have this return the value of the instance's `name` field. (Again, be sure to create this method *inside* the `AccessList` class.)
+Finally, add a `__str__()` method so the model has a friendly string representation.
 
 ```python
     def __str__(self):
         return self.name
 ```
 
+At this point, `models.py` should look like this:
+
+```python
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
+from netbox.models import NetBoxModel
+
+
+class AccessList(NetBoxModel):
+    name = models.CharField(
+        max_length=100,
+    )
+    default_action = models.CharField(
+        max_length=30,
+    )
+    comments = models.TextField(
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Access List'
+
+    def __str__(self):
+        return self.name
+```
+
 ### AccessListRule
 
-Our second model will hold the individual rules assigned to each access list. This model will be a bit more complex. We'll need to define fields for all of the following:
+Next, we will define a model for the individual rules that belong to an access list.
+
+Each rule needs the following fields:
 
 * Parent access list (a foreign key to an `AccessList` instance)
-* Index (the rule's order in the list)
+* Index (rule order)
 * Protocol
 * Source prefix
-* Source port(s)
+* Source ports
 * Destination prefix
-* Destination port(s)
-* Action (permit, allow, or reject)
+* Destination ports
+* Action (permit, deny, reject)
 * Description (optional)
 
-Let's start by defining a `ForeignKey` field pointing to the `AccessList` model.
+Start by creating the model and adding a `ForeignKey` back to `AccessList`:
 
 ```python
 class AccessListRule(NetBoxModel):
     access_list = models.ForeignKey(
-        to=AccessList,
+        to='netbox_access_lists.AccessList',
         on_delete=models.CASCADE,
-        related_name='rules'
+        related_name='rules',
     )
 ```
 
-We're passing three keyword arguments to the field:
+A quick breakdown of the arguments we passed:
 
-* `to` references the related model class
-* `on_delete` tells Django what action to take if the related object is deleted. `CASCADE` will automatically delete any rules assigned to a deleted access list.
-* `related_name` defines the attribute of the reverse relationship being added to the related class. The rules assigned to an `AccessList` instance can be referenced as `accesslist.rules.all()`.
+* `to` identifies the related model. Using the string form `'<app_label>.<ModelName>'` avoids import order issues and matches how we reference models in other apps.
+* `on_delete=models.CASCADE` means: if an access list is deleted, delete its rules as well.
+* `related_name='rules'` creates a reverse relationship so you can access rules from an access list instance via `acl.rules.all()`.
 
-Next we'll add an `index` field to store the rule's number (position) within the access list. We'll use `PositiveIntegerField` because only positive numbers are supported.
+Next, add an `index` field to store the rule's position within the access list.
+We'll use `PositiveIntegerField` because only positive numbers are supported:
 
 ```python
     index = models.PositiveIntegerField()
 ```
 
-The protocol field is next. This will store the name of a protocol such as TCP or UDP. Notice that we're setting `blank=True` because it should not be required to specify a particular protocol when creating a rule.
+Now add the protocol field.
+This will store the name of a protocol such as TCP or UDP.
+Notice that we're setting `blank=True` because it should not be required to specify a particular protocol when creating a rule.
 
 ```python
     protocol = models.CharField(
         max_length=30,
-        blank=True
+        blank=True,
     )
 ```
 
-Next we need to define a source prefix. We're going to use a foreign key field to reference an instance of NetBox's [`Prefix` model](https://netboxlabs.com/docs/netbox/en/stable/models/ipam/prefix/) within its `ipam` app. Instead of importing the model class, we can instead reference it by name. And because we want this to be an _optional_ field, we'll also set `blank=True` and `null=True`.
+Next, define a source prefix.
+We reference NetBox's [`Prefix` model](https://netboxlabs.com/docs/netbox/en/stable/models/ipam/prefix/) using the `'<app_label>.<ModelName>'` format, in this case `ipam.Prefix`.
+We also mark it optional using `blank=True` and `null=True`.
 
 ```python
     source_prefix = models.ForeignKey(
@@ -111,25 +163,27 @@ Next we need to define a source prefix. We're going to use a foreign key field t
         on_delete=models.PROTECT,
         related_name='+',
         blank=True,
-        null=True
+        null=True,
     )
 ```
 
-:green_circle: **Tip:** Whereas `CASCADE` automatically deletes child objects, `PROTECT` prevents the deletion of the parent option if any child objects exist.
+:green_circle: **Tip:** `PROTECT` prevents deletion of the referenced object while it is still in use. This is often safer than allowing accidental deletes of shared objects like prefixes.
 
-Notice above that we've defined `related_name='+'`. This tells Django not to create a reverse relationship from the `Prefix` model to the `AccessListRule` model, because it wouldn't be very useful.
+Notice `related_name='+'` above.
+This tells Django not to create a reverse relationship from `Prefix` back to `AccessListRule`, which keeps the `Prefix` model namespace cleaner.
 
-We also need to add a field for the source port number(s). We could use an integer field for this, however that would limit us to defining a single source port per rule. Instead, we can add an [`ArrayField`](https://docs.djangoproject.com/en/stable/ref/contrib/postgres/fields/#arrayfield) to store a list of `PositiveIntegerField` values. Like `source_prefix`, this will also be an optional field, so we add `blank=True` and `null=True` as well.
+Now add a field for source ports.
+We want to support more than one port per rule, so we will store a list of integers using [`ArrayField`](https://docs.djangoproject.com/en/stable/ref/contrib/postgres/fields/#arrayfield) to store a list of `PositiveIntegerField` values.
 
 ```python
     source_ports = ArrayField(
         base_field=models.PositiveIntegerField(),
         blank=True,
-        null=True
+        null=True,
     )
 ```
 
-Let's go ahead an add destination prefix and port fields as well. These are essentially duplicates of our source fields.
+Now add destination prefix and destination ports, which mirror the source fields:
 
 ```python
     destination_prefix = models.ForeignKey(
@@ -137,33 +191,38 @@ Let's go ahead an add destination prefix and port fields as well. These are esse
         on_delete=models.PROTECT,
         related_name='+',
         blank=True,
-        null=True
+        null=True,
     )
     destination_ports = ArrayField(
         base_field=models.PositiveIntegerField(),
         blank=True,
-        null=True
+        null=True,
     )
 ```
 
-Finally, we'll add fields for the rule's action and description. The action is required but a description is not.
+Finally, add the rule action (required) and an optional description:
 
 ```python
     action = models.CharField(
-        max_length=30
+        max_length=30,
     )
     description = models.CharField(
         max_length=500,
-        blank=True
+        blank=True,
     )
 ```
 
-With our fields out of the way, this model will also need a `Meta` class to define database ordering and to ensure that every rule has a unique index number within its parent access list.
+Add a `Meta` class to:
+
+* order rules by access list and index
+* enforce uniqueness so two rules in the same access list cannot share the same index
+* set a friendly model name for the UI
 
 ```python
     class Meta:
         ordering = ('access_list', 'index')
         unique_together = ('access_list', 'index')
+        verbose_name = 'Access List Rule'
 ```
 
 Finally, we'll add a `__str__()` method to display the parent access list and index number when rendering an `AccessListRule` instance as a string:
@@ -175,83 +234,104 @@ Finally, we'll add a `__str__()` method to display the parent access list and in
 
 ## Define Field Choices
 
-Looking back at our models, we see a few fields that would benefit from having pre-defined choices from which a user can select when creating or modifying an instance. Specifically, we expect a rule's `action` field to only ever have one of three values:
+Some of our fields should only allow specific values.
+For example, we want an `action` to be one of:
 
 * Permit
 * Deny
 * Reject
 
-We can define a [`ChoiceSet`](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/models/#choice-sets) to store these pre-defined values for the user, to avoid the hassle of manually typing the name of the desired action each time. Back at the top of `models.py`, import NetBox's `ChoiceSet` class:
+NetBox provides [`ChoiceSet`](https://netboxlabs.com/docs/netbox/en/stable/plugins/development/models/#choice-sets) to define a reusable list of valid values (with optional colors for the UI).
+
+Create a new file named `choices.py` next to `models.py`:
+
+```bash
+touch choices.py
+```
+
+In `choices.py`, import `ChoiceSet`:
 
 ```python
 from utilities.choices import ChoiceSet
 ```
 
-Then, below the import statements but above the model definitions, create a child class named `ActionChoices`:
+Now define `ActionChoices`:
 
 ```python
 class ActionChoices(ChoiceSet):
-    key = 'AccessListRule.action'
+    PERMIT = 'permit'
+    DENY = 'deny'
+    REJECT = 'reject'
 
     CHOICES = [
-        ('permit', 'Permit', 'green'),
-        ('deny', 'Deny', 'red'),
-        ('reject', 'Reject (Reset)', 'orange'),
+        (PERMIT, 'Permit', 'green'),
+        (DENY, 'Deny', 'red'),
+        (REJECT, 'Reject (Reset)', 'orange'),
     ]
 ```
 
 The `CHOICES` attribute must be an iterable of two- or three-value tuples, each of which defines the following:
 
-* The raw value to be stored in the database
-* A human-friendly string for display
-* A color for display in the UI (optional, see [available colors](https://netboxlabs.com/docs/netbox/en/stable/configuration/data-validation/#field_choices))
+* the database value (e.g. `permit` or `deny`)
+* the UI label (e.g. Permit, Deny, Reject)
+* an optional UI color (see [available colors](https://netboxlabs.com/docs/netbox/en/stable/configuration/data-validation/#field_choices))
 
-Additionally, we've added a `key` attribute: This will allow the NetBox administrator to replace or extend the plugin's default choices via NetBox's [`FIELD_CHOICES`](https://netboxlabs.com/docs/netbox/en/stable/configuration/data-validation/#field_choices) configuration parameter.
+Now create `ProtocolChoices` as well:
 
-Now, we can reference this as the set of valid choices on the `default_action` and `action` model fields by passing it as the `choices` keyword argument.
+```python
+class ProtocolChoices(ChoiceSet):
+    key = 'AccessListRule.protocol'
+
+    TCP = 'tcp'
+    UDP = 'udp'
+    ICMP = 'icmp'
+
+    CHOICES = [
+        (TCP, 'TCP', 'blue'),
+        (UDP, 'UDP', 'orange'),
+        (ICMP, 'ICMP', 'purple'),
+    ]
+```
+
+:blue_square: **Note:** We set `key` so an administrator can replace or extend these choices via NetBox's [`FIELD_CHOICES`](https://netboxlabs.com/docs/netbox/en/stable/configuration/data-validation/#field_choices) setting.
+
+### Apply Choices in the Models
+
+Back in `models.py`, import the choice sets:
+
+```python
+from .choices import ActionChoices, ProtocolChoices
+```
+
+Then update these fields to use the appropriate choices:
 
 ```python
     # AccessList
     default_action = models.CharField(
         max_length=30,
-        choices=ActionChoices
+        choices=ActionChoices,
     )
 
-    # AccessListRule
-    action = models.CharField(
-        max_length=30,
-        choices=ActionChoices
-    )
-```
-
-Let's create a set of choices for a rule's `protocol` field as well. Add this below the `ActionChoices` class:
-
-```python
-class ProtocolChoices(ChoiceSet):
-
-    CHOICES = [
-        ('tcp', 'TCP', 'blue'),
-        ('udp', 'UDP', 'orange'),
-        ('icmp', 'ICMP', 'purple'),
-    ]
-```
-
-Then, add the `choices` keyword argument to the `protocol` field:
-
-```python
     # AccessListRule
     protocol = models.CharField(
         max_length=30,
         choices=ProtocolChoices,
-        blank=True
+        blank=True,
+    )
+    # ...
+    action = models.CharField(
+        max_length=30,
+        choices=ActionChoices,
     )
 ```
 
 ### Add Choice Color Methods
 
-Now that we've defined choices for some of our model fields, we'll need to provide a method for returning the appropriate color for a selected choice. This works similar to Django's `get_FOO_display()` methods, but returns a color (defined on the field's `ChoiceSet`) rather than a label. This method will be called e.g. when displaying the field in a table.
+NetBox can display colors for choice values in tables and templates.
+To support that, we add a method per choice field that returns the selected color.
+This works similar to Django's `get_FOO_display()` methods, but returns a color (defined on the field's `ChoiceSet`) rather than a label.
 
-Let's add a `get_default_action_color()` method on `AccessList`:
+Add this method to `AccessList`:
 
 ```python
 class AccessList(NetBoxModel):
@@ -260,7 +340,7 @@ class AccessList(NetBoxModel):
         return ActionChoices.colors.get(self.default_action)
 ```
 
-We also need to add methods for `protocol` and `action` on `AccessListRule`:
+Add these methods to `AccessListRule`:
 
 ```python
 class AccessListRule(NetBoxModel):
@@ -272,54 +352,162 @@ class AccessListRule(NetBoxModel):
         return ActionChoices.colors.get(self.action)
 ```
 
+At this point, your `models.py` file should look like this:
+
+```python
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
+from netbox.models import NetBoxModel
+
+from .choices import ActionChoices, ProtocolChoices
+
+
+class AccessList(NetBoxModel):
+    name = models.CharField(
+        max_length=100,
+    )
+    default_action = models.CharField(
+        max_length=30,
+        choices=ActionChoices,
+    )
+    comments = models.TextField(
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Access List'
+
+    def __str__(self):
+        return self.name
+
+    def get_default_action_color(self):
+        return ActionChoices.colors.get(self.default_action)
+
+
+class AccessListRule(NetBoxModel):
+    access_list = models.ForeignKey(
+        to='netbox_access_lists.AccessList',
+        on_delete=models.CASCADE,
+        related_name='rules',
+    )
+    index = models.PositiveIntegerField()
+    protocol = models.CharField(
+        max_length=30,
+        choices=ProtocolChoices,
+        blank=True,
+    )
+    source_prefix = models.ForeignKey(
+        to='ipam.Prefix',
+        on_delete=models.PROTECT,
+        related_name='+',
+        blank=True,
+        null=True,
+    )
+    source_ports = ArrayField(
+        base_field=models.PositiveIntegerField(),
+        blank=True,
+        null=True,
+    )
+    destination_prefix = models.ForeignKey(
+        to='ipam.Prefix',
+        on_delete=models.PROTECT,
+        related_name='+',
+        blank=True,
+        null=True,
+    )
+    destination_ports = ArrayField(
+        base_field=models.PositiveIntegerField(),
+        blank=True,
+        null=True,
+    )
+    action = models.CharField(
+        max_length=30,
+        choices=ActionChoices,
+    )
+    description = models.CharField(
+        max_length=500,
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ('access_list', 'index')
+        unique_together = ('access_list', 'index')
+        verbose_name = 'Access List Rule'
+
+    def __str__(self):
+        return f'{self.access_list}: Rule {self.index}'
+
+    def get_protocol_color(self):
+        return ProtocolChoices.colors.get(self.protocol)
+
+    def get_action_color(self):
+        return ActionChoices.colors.get(self.action)
+```
+
 ## Create Schema Migrations
 
-Now that we have our models defined, we need to generate a schema for the PostgreSQL database. While it's possible to create the tables and constraints by hand, it's _much_ easier to employ Django's [migrations feature](https://docs.djangoproject.com/en/stable/topics/migrations/). This will inspect our model classes and generate the necessary migration files automatically. This is a two-step process: First we generate the migration file with the `makemigrations` management command, then we run `migrate` to apply it to the live database.
+Now that we have our models defined, we need to generate a schema for the PostgreSQL database.
+While it's possible to create the tables and constraints by hand, it's _much_ easier to employ Django's [migrations feature](https://docs.djangoproject.com/en/stable/topics/migrations/).
+This will inspect our model classes and generate the necessary migration files automatically.
 
-:warning: **Warning:** Before continuing, check that you've set `DEVELOPER=True` in NetBox's `configuration.py` file. This is necessary to disable a safeguard intended to prevent people from creating new migrations mistakenly.
+This is a two-step process:
+
+1. Generate migration files with `makemigrations`
+2. Apply them to the database with `migrate`
+
+:warning: **Warning:** Before continuing, confirm that `DEVELOPER=True` is set in NetBox's `configuration.py`. NetBox uses this setting to guard against accidental migration creation in non development environments.
 
 ### Generate Migration Files
 
-Change into the NetBox installation root to run `manage.py`. First, we'll run `makemigrations` with the `--dry-run` argument as a sanity-check. This will report what changes have been detected, but won't actually generate any migration files.
+Change into the NetBox installation root so you can run `manage.py` (for example `/opt/netbox`).
+
+First, run `makemigrations` in dry run mode so you can review what will be generated:
 
 ```bash
-$ python netbox/manage.py makemigrations netbox_access_lists --dry-run
+(venv) $ python netbox/manage.py makemigrations netbox_access_lists --dry-run
 Migrations for 'netbox_access_lists':
   ~/netbox-plugin-demo/netbox_access_lists/migrations/0001_initial.py
-    - Create model AccessList
-    - Create model AccessListRule
+    + Create model AccessList
+    + Create model AccessListRule
 ```
 
-We should see a plan to create our plugin's first migration file, `0001_initial.py`, with the two models we defined in `models.py`. (If you encounter an error at this point, or don't see the output above, **stop here** and review your work.) If everything looks good, proceed with creating the migration file (omitting the `--dry-run` argument):
+We should see a plan to create our plugin's first migration file, `0001_initial.py`, with the two models we defined in `models.py`.
+(If you encounter an error at this point, or don't see the output above, **stop here** and review your work.)
+If everything looks good, run it again without `--dry-run` to actually create the migration file:
 
 ```bash
-$ python netbox/manage.py makemigrations netbox_access_lists
+(venv) $ python netbox/manage.py makemigrations netbox_access_lists
 Migrations for 'netbox_access_lists':
   ~/netbox-plugin-demo/netbox_access_lists/migrations/0001_initial.py
-    - Create model AccessList
-    - Create model AccessListRule
+    + Create model AccessList
+    + Create model AccessListRule
 ```
 
-Back in your plugin workspace, you should now see a `migrations` directory with two files: `__init__.py` and `0001_initial.py`.
+Back in your plugin workspace, you should now see a `migrations` directory with `__init__.py` and `0001_initial.py`:
 
 ```bash
 $ tree
 .
-├── __init__.py
-├── migrations
-│   ├── 0001_initial.py
-│   ├── __init__.py
-...
+├── netbox_access_lists
+│   ├── choices.py
+│   ├── __init__.py
+│   ├── migrations
+│   │   ├── 0001_initial.py
+│   │   └── __init__.py
+│   └── models.py
+├── pyproject.toml
+└── README.md
 ```
 
 ### Apply Migrations
 
-Finally, we can apply the migration file using the `migrate` management command:
+Now apply the migrations from the NetBox root directory:
 
 ```bash
-$ python netbox/manage.py migrate
+(venv) $ python netbox/manage.py migrate netbox_access_lists
 Operations to perform:
-  Apply all migrations: admin, auth, circuits, contenttypes, dcim, django_rq, extras, ipam, netbox_access_lists, sessions, social_django, taggit, tenancy, users, virtualization, wireless
+  Apply all migrations: netbox_access_lists
 Running migrations:
   Applying netbox_access_lists.0001_initial... OK
 ```
@@ -327,22 +515,22 @@ Running migrations:
 If you're curious, you can inspect the newly created database tables, using the `dbshell` management command to enter a PostgreSQL shell:
 
 ```bash
-$ python netbox/manage.py dbshell
-psql (10.19 (Ubuntu 10.19-0ubuntu0.18.04.1))
-SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+(venv) $ python netbox/manage.py dbshell
+psql (16.11 (Ubuntu 16.11-0ubuntu0.24.04.1))
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: off)
 Type "help" for help.
 
 netbox=> \d netbox_access_lists_accesslist
-                                          Table "public.netbox_access_lists_accesslist"
-      Column       |           Type           | Collation | Nullable |                          Default                           
--------------------+--------------------------+-----------+----------+------------------------------------------------------------
- id                | bigint                   |           | not null | nextval('netbox_access_lists_accesslist_id_seq'::regclass)
- created           | timestamp with time zone |           |          | 
- last_updated      | timestamp with time zone |           |          | 
- custom_field_data | jsonb                    |           | not null | 
- name              | character varying(100)   |           | not null | 
- default_action    | character varying(30)    |           | not null | 
- comments          | text                     |           | not null | 
+                             Table "public.netbox_access_lists_accesslist"
+      Column       |           Type           | Collation | Nullable |             Default
+-------------------+--------------------------+-----------+----------+----------------------------------
+ id                | bigint                   |           | not null | generated by default as identity
+ created           | timestamp with time zone |           |          |
+ last_updated      | timestamp with time zone |           |          |
+ custom_field_data | jsonb                    |           | not null |
+ name              | character varying(100)   |           | not null |
+ default_action    | character varying(30)    |           | not null |
+ comments          | text                     |           | not null |
 Indexes:
     "netbox_access_lists_accesslist_pkey" PRIMARY KEY, btree (id)
 Referenced by:
@@ -353,65 +541,93 @@ Type `\q` to exit `dbshell`.
 
 ## Create Some Objects
 
-Now that we have our models installed, let's try creating some objects. First, enter the NetBox shell. This is an interactive Python command line interface which allows us to interact directly with NetBox objects and other resources.
+Now that we have our models installed, let's try creating some objects.
+First, enter the NetBox shell.
+This is an interactive Python command line interface that allows us to interact directly with NetBox objects and other resources.
+
+Start the NetBox interactive shell:
 
 ```bash
-$ python netbox/manage.py nbshell
-from netbox### NetBox interactive shell
-### Python 3.8.12 | Django 4.0.3 | NetBox 3.2.0
-### lsmodels() will show available models. Use help(<model>) for more info.
+(venv) $ python netbox/manage.py nbshell
+### NetBox interactive shell
+### Python v3.12.3 | Django v5.2.10 | NetBox Community v4.5.2
+### Plugins: netbox_access_lists v0.1
+### lsapps() & lsmodels() will show available models. Use help(<model>) for more info.
 >>>
 ```
 
-Let's create and save an access list:
+Create an access list, validate it with `full_clean()`, then save it:
 
 ```python
->>> from netbox_access_lists.models import *
->>> acl = AccessList(name='MyACL1', default_action='deny')
+>>> from netbox_access_lists.models import AccessList, AccessListRule
+>>> from netbox_access_lists.choices import ActionChoices, ProtocolChoices
+>>> acl = AccessList(name='MyACL1', default_action=ActionChoices.DENY)
+>>> acl.full_clean()
+>>> acl.save()
 >>> acl
 <AccessList: MyACL1>
->>> acl.save()
 ```
 
-Next we'll create some prefixes to reference in rules:
+Next, create a couple of prefixes to reference in rules:
 
 ```python
+>>> from ipam.models import Prefix
 >>> prefix1 = Prefix(prefix='192.168.1.0/24')
+>>> prefix1.full_clean()
 >>> prefix1.save()
 >>> prefix2 = Prefix(prefix='192.168.2.0/24')
+>>> prefix2.full_clean()
 >>> prefix2.save()
 ```
 
-And finally we'll create a couple rules for our access list:
+:blue_square: **Note:** If `full_clean()` complains about missing required fields (for example `status`), set the missing values and try again. Defaults can vary depending on your NetBox version and configuration.
+
+Now create two rules:
 
 ```python
->>> AccessListRule(
+>>> rule1 = AccessListRule(
 ...     access_list=acl,
 ...     index=10,
-...     protocol='tcp',
+...     protocol=ProtocolChoices.TCP,
 ...     destination_prefix=prefix1,
 ...     destination_ports=[80, 443],
-...     action='permit',
+...     action=ActionChoices.PERMIT,
 ...     description='Web traffic'
-... ).save()
->>> AccessListRule(
+... )
+>>> rule1.full_clean()
+>>> rule1.save()
+>>> rule2 = AccessListRule(
 ...     access_list=acl,
 ...     index=20,
-...     protocol='udp',
+...     protocol=ProtocolChoices.UDP,
 ...     destination_prefix=prefix2,
 ...     destination_ports=[53],
-...     action='permit',
+...     action=ActionChoices.PERMIT,
 ...     description='DNS'
-... ).save()
+... )
+>>> rule2.full_clean()
+>>> rule2.save()
+```
+
+Verify the rules are associated with the access list.
+We can use the `all()` manager to retrieve all rules belonging to a particular access list:
+
+```python
 >>> acl.rules.all()
 <RestrictedQuerySet [<AccessListRule: MyACL1: Rule 10>, <AccessListRule: MyACL1: Rule 20>]>
 ```
 
-Excellent! We can now create access lists and rules in the database. The next few steps will work on exposing this functionality in the NetBox user interface.
+Exit the shell:
+
+```python
+>>> exit()
+```
+
+Excellent. We can now create access lists and rules in the database.
+In the next steps, we will expose this functionality in the NetBox user interface.
 
 <div align="center">
 
-:arrow_left: [Step 1: Initial Setup](/tutorial/step01-initial-setup.md) | [Step 3: Tables](/tutorial/step03-tables.md) :arrow_right:
+:arrow_left: [Step 1: Plugin Configuration](/tutorial/step01-plugin-configuration.md) | [Step 3: Tables](/tutorial/step03-tables.md) :arrow_right:
 
 </div>
-
