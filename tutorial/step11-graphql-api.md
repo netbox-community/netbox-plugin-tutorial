@@ -97,7 +97,7 @@ Create a filter class for `AccessList`.
 The `@strawberry_django.filter(...)` decorator connects the filter class to the model.
 
 ```python
-@strawberry_django.filter(models.AccessList, lookups=True)
+@strawberry_django.filter_type(models.AccessList, lookups=True)
 class AccessListFilter(NetBoxModelFilter):
     name: FilterLookup[str] | None = strawberry_django.filter_field()
     default_action: (
@@ -127,7 +127,7 @@ This includes:
 Add this below `AccessListFilter`:
 
 ```python
-@strawberry_django.filter(models.AccessListRule, lookups=True)
+@strawberry_django.filter_type(models.AccessListRule, lookups=True)
 class AccessListRuleFilter(NetBoxModelFilter):
     access_list: (
         Annotated[
