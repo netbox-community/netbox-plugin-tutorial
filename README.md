@@ -31,6 +31,7 @@ Before attempting to create a plugin, please assess your personal ability. Plugi
 * [Step 10: REST API](/tutorial/step10-rest-api.md)
 * [Step 11: GraphQL API](/tutorial/step11-graphql-api.md)
 * [Step 12: Search](/tutorial/step12-search.md)
+* [Step 13: Wrap Up](/tutorial/step13-wrap-up.md)
 
 ### Reference
 
