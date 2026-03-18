@@ -154,7 +154,7 @@ For `source_prefix` and `destination_prefix`, we can use NetBox's nested prefix 
 ```python
 class AccessListRuleSerializer(NetBoxModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail'
+        view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail',
     )
     source_prefix = PrefixSerializer(nested=True, required=False, allow_null=True)
     destination_prefix = PrefixSerializer(nested=True, required=False, allow_null=True)
@@ -173,7 +173,7 @@ Update both serializer `Meta` classes to include `brief_fields`:
 ```python
 class AccessListSerializer(NetBoxModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name='plugins-api:netbox_access_lists-api:accesslist-detail'
+        view_name='plugins-api:netbox_access_lists-api:accesslist-detail',
     )
     rule_count = serializers.IntegerField(read_only=True)
 
@@ -197,7 +197,7 @@ class AccessListSerializer(NetBoxModelSerializer):
 
 class AccessListRuleSerializer(NetBoxModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail'
+        view_name='plugins-api:netbox_access_lists-api:accesslistrule-detail',
     )
     access_list = AccessListSerializer(nested=True)
     source_prefix = PrefixSerializer(nested=True, required=False, allow_null=True)
@@ -291,9 +291,7 @@ We also annotate `rule_count` so the serializer field is populated.
 
 ```python
 class AccessListViewSet(NetBoxModelViewSet):
-    queryset = models.AccessList.objects.prefetch_related('tags').annotate(
-        rule_count=Count('rules')
-    )
+    queryset = models.AccessList.objects.annotate(rule_count=Count('rules')).prefetch_related('tags')
     serializer_class = AccessListSerializer
 ```
 
@@ -338,7 +336,7 @@ Set `app_name`.
 NetBox uses this namespace to resolve view names, including the `view_name` values we used in our serializers.
 
 ```python
-app_name = 'netbox_access_lists-api'
+app_name = 'netbox_access_lists'
 ```
 
 Now create a router and register each viewset:

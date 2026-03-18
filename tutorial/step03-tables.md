@@ -31,7 +31,7 @@ We import:
 
 ```python
 import django_tables2 as tables
-from netbox.tables import ChoiceFieldColumn, columns, NetBoxTable
+from netbox.tables import ChoiceFieldColumn, NetBoxTable, columns
 
 from .models import AccessList, AccessListRule
 ```
@@ -201,7 +201,7 @@ Your complete `tables.py` file should now look like this:
 
 ```python
 import django_tables2 as tables
-from netbox.tables import ChoiceFieldColumn, columns, NetBoxTable
+from netbox.tables import ChoiceFieldColumn, NetBoxTable, columns
 
 from .models import AccessList, AccessListRule
 

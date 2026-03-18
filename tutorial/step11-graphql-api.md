@@ -100,10 +100,9 @@ The `@strawberry_django.filter(...)` decorator connects the filter class to the 
 @strawberry_django.filter_type(models.AccessList, lookups=True)
 class AccessListFilter(NetBoxModelFilter):
     name: FilterLookup[str] | None = strawberry_django.filter_field()
-    default_action: (
-        Annotated['ActionEnum', strawberry.lazy('netbox_access_lists.graphql.enums')]
-        | None
-    ) = strawberry_django.filter_field()
+    default_action: Annotated['ActionEnum', strawberry.lazy('netbox_access_lists.graphql.enums')] | None = (
+        strawberry_django.filter_field()
+    )
 ```
 
 A few notes:
@@ -129,45 +128,33 @@ Add this below `AccessListFilter`:
 ```python
 @strawberry_django.filter_type(models.AccessListRule, lookups=True)
 class AccessListRuleFilter(NetBoxModelFilter):
-    access_list: (
-        Annotated[
-            'AccessListFilter', strawberry.lazy('netbox_access_lists.graphql.filters')
-        ]
-        | None
-    ) = strawberry_django.filter_field()
+    access_list: Annotated['AccessListFilter', strawberry.lazy('netbox_access_lists.graphql.filters')] | None = (
+        strawberry_django.filter_field()
+    )
     access_list_id: ID | None = strawberry_django.filter_field()
-    index: (
-        Annotated['IntegerLookup', strawberry.lazy('netbox.graphql.filter_lookups')]
-        | None
-    ) = strawberry_django.filter_field()
-    protocol: (
-        Annotated['ProtocolEnum', strawberry.lazy('netbox_access_lists.graphql.enums')]
-        | None
-    ) = strawberry_django.filter_field()
-    source_prefix: (
-        Annotated['PrefixFilter', strawberry.lazy('ipam.graphql.filters')] | None
-    ) = strawberry_django.filter_field()
+    index: Annotated['IntegerLookup', strawberry.lazy('netbox.graphql.filter_lookups')] | None = (
+        strawberry_django.filter_field()
+    )
+    protocol: Annotated['ProtocolEnum', strawberry.lazy('netbox_access_lists.graphql.enums')] | None = (
+        strawberry_django.filter_field()
+    )
+    source_prefix: Annotated['PrefixFilter', strawberry.lazy('ipam.graphql.filters')] | None = (
+        strawberry_django.filter_field()
+    )
     source_prefix_id: ID | None = strawberry_django.filter_field()
-    source_ports: (
-        Annotated[
-            'IntegerArrayLookup', strawberry.lazy('netbox.graphql.filter_lookups')
-        ]
-        | None
-    ) = strawberry_django.filter_field()
-    destination_prefix: (
-        Annotated['PrefixFilter', strawberry.lazy('ipam.graphql.filters')] | None
-    ) = strawberry_django.filter_field()
+    source_ports: Annotated['IntegerArrayLookup', strawberry.lazy('netbox.graphql.filter_lookups')] | None = (
+        strawberry_django.filter_field()
+    )
+    destination_prefix: Annotated['PrefixFilter', strawberry.lazy('ipam.graphql.filters')] | None = (
+        strawberry_django.filter_field()
+    )
     destination_prefix_id: ID | None = strawberry_django.filter_field()
-    destination_ports: (
-        Annotated[
-            'IntegerArrayLookup', strawberry.lazy('netbox.graphql.filter_lookups')
-        ]
-        | None
-    ) = strawberry_django.filter_field()
-    action: (
-        Annotated['ActionEnum', strawberry.lazy('netbox_access_lists.graphql.enums')]
-        | None
-    ) = strawberry_django.filter_field()
+    destination_ports: Annotated['IntegerArrayLookup', strawberry.lazy('netbox.graphql.filter_lookups')] | None = (
+        strawberry_django.filter_field()
+    )
+    action: Annotated['ActionEnum', strawberry.lazy('netbox_access_lists.graphql.enums')] | None = (
+        strawberry_django.filter_field()
+    )
 ```
 
 At this point, `graphql/filters.py` is complete.
@@ -186,7 +173,7 @@ touch graphql/types.py
 Add the imports:
 
 ```python
-from typing import TYPE_CHECKING, Annotated, List
+from typing import TYPE_CHECKING, Annotated
 
 import strawberry
 import strawberry_django
@@ -208,30 +195,18 @@ Now define types for both models.
 We use `fields="__all__"` to include all model fields automatically, and we connect the GraphQL filters using `filters=...`.
 
 ```python
-@strawberry_django.type(
-    models.AccessList, fields='__all__', filters=filters.AccessListFilter
-)
+@strawberry_django.type(models.AccessList, fields='__all__', filters=filters.AccessListFilter)
 class AccessListType(NetBoxObjectType):
     # Related models
-    rules: List[
-        Annotated[
-            'AccessListRuleType', strawberry.lazy('netbox_access_lists.graphql.types')
-        ]
-    ]
+    rules: list[Annotated['AccessListRuleType', strawberry.lazy('netbox_access_lists.graphql.types')]]
 
 
-@strawberry_django.type(
-    models.AccessListRule, fields='__all__', filters=filters.AccessListRuleFilter
-)
+@strawberry_django.type(models.AccessListRule, fields='__all__', filters=filters.AccessListRuleFilter)
 class AccessListRuleType(NetBoxObjectType):
     # Model fields
-    access_list: Annotated[
-        'AccessListType', strawberry.lazy('netbox_access_lists.graphql.types')
-    ]
+    access_list: Annotated['AccessListType', strawberry.lazy('netbox_access_lists.graphql.types')]
     source_prefix: Annotated['PrefixType', strawberry.lazy('ipam.graphql.types')] | None
-    destination_prefix: (
-        Annotated['PrefixType', strawberry.lazy('ipam.graphql.types')] | None
-    )
+    destination_prefix: Annotated['PrefixType', strawberry.lazy('ipam.graphql.types')] | None
 ```
 
 A few notes:
