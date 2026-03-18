@@ -211,7 +211,8 @@ source /opt/netbox/venv/bin/activate
 
 We can now install our plugin by running `pip install -e .` from the project root.
 
-The `-e` (`--editable`) argument tells `pip` to create a link to our local development directory instead of copying files into the virtual environment. This avoids the need to re-install the plugin every time we make a change.
+The `-e` (`--editable`) argument tells `pip` to create a link to our local development directory instead of copying files into the virtual environment.
+This avoids the need to re-install the plugin every time we make a change.
 
 ```bash
 python -m pip install -e .
@@ -221,7 +222,8 @@ python -m pip install -e .
 
 Finally, we need to configure NetBox to enable our new plugin.
 
-Over in the NetBox installation path, open `netbox/netbox/configuration.py` and look for the `PLUGINS` parameter (it should be an empty list). If it's not yet defined, go ahead and create it.
+Over in the NetBox installation path, open `netbox/netbox/configuration.py` and look for the `PLUGINS` parameter (it should be an empty list).
+If it's not yet defined, go ahead and create it.
 
 Add the name of our plugin to this list:
 
@@ -240,7 +242,9 @@ Save the file and start (or restart) the NetBox development server:
 python netbox/manage.py runserver
 ```
 
-You should see the development server start successfully. Open NetBox in a new browser window, log in as a superuser, and navigate to the admin UI. Under **Admin > System > Plugins** you should see our plugin listed.
+You should see the development server start successfully.
+Open NetBox in a new browser window, log in as a superuser, and navigate to the admin UI.
+Under **Admin > System > Plugins** you should see our plugin listed.
 
 ![NetBox UI: Plugins list](/images/step01-netbox-plugin-list.png)
 

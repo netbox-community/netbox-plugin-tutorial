@@ -4,7 +4,7 @@ Before we start writing our plugin, we need a working local NetBox development e
 
 - Install (or verify) a local NetBox dev setup
 - Enable development-friendly settings
-- Optionally clone the demo plugin repository so you can follow along (or jump between tutorial steps)
+- Optionally, clone the demo plugin repository so you can follow along (or jump between tutorial steps)
 
 :warning: **Warning:** This tutorial requires **NetBox v4.5 or later**. Attempting to use an earlier NetBox release will not work.
 

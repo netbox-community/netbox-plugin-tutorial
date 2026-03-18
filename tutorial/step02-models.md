@@ -200,7 +200,7 @@ Now add destination prefix and destination ports, which mirror the source fields
     )
 ```
 
-Finally, add the rule action (required), an optional description and comments:
+Finally, add the rule action (required), an optional description, and comments:
 
 ```python
     action = models.CharField(

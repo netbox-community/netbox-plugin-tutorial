@@ -1,6 +1,7 @@
 # Step 6: URLs
 
-The views we created in the previous step exist as Python classes, but NetBox still needs to know which URL paths should route to which views. In this step we will map our views to URLs in one of two ways:
+The views we created in the previous step exist as Python classes, but NetBox still needs to know which URL paths should route to which views.
+In this step we will map our views to URLs in one of two ways:
 
 * Use NetBox's `get_model_urls()` helper (recommended, works great with `register_model_view()`)
 * Define every URL path manually (useful if you prefer explicit routing)
@@ -11,7 +12,8 @@ This guide assumes you are using the decorator-based approach, but the manual ap
 
 ## Map Views to URLs using the decorator
 
-In the `netbox_access_lists/` directory of your plugin project root, create `urls.py`. This file defines the URL patterns for your plugin.
+In the `netbox_access_lists/` directory of your plugin project root, create `urls.py`.
+This file defines the URL patterns for your plugin.
 
 ```bash
 cd netbox_access_lists/
@@ -37,7 +39,8 @@ from . import views
 
 ### Add AccessList URLs
 
-`get_model_urls()` can generate all URL patterns for a model based on the views registered via `register_model_view()`. In practice, you will usually include it twice for each model:
+`get_model_urls()` can generate all URL patterns for a model based on the views registered via `register_model_view()`.
+In practice, you will usually include it twice for each model:
 
 * once for list level routes (where `detail=False`)
 * once for object detail routes (where the path contains `<int:pk>`)
@@ -58,7 +61,8 @@ urlpatterns = (
 )
 ```
 
-We chose `access lists` as the base URL path for the `AccessList` model. You can choose something else, but keeping a consistent scheme makes it easier to reason about your plugin and aligns with how NetBox structures many of its own URLs.
+We chose `access lists` as the base URL path for the `AccessList` model.
+You can choose something else, but keeping a consistent scheme makes it easier to reason about your plugin and aligns with how NetBox structures many of its own URLs.
 
 `get_model_urls()` takes these arguments:
 
@@ -137,7 +141,7 @@ from . import models, views
 ```
 
 We have four views per model, but we need five paths for each.
-This is because the add and edit operations are handled by the same view, but accessed via different URLs.
+This is because the add and edit operations are handled by the same view but accessed via different URLs.
 Along with the URL and view for each path, we also specify a `name` so we can reference URLs easily in code.
 
 ```python

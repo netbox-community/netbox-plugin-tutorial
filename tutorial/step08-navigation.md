@@ -1,6 +1,7 @@
 # Step 8: Navigation
 
-So far, we have been entering URLs manually to access our plugin views. That works for development, but it is not very friendly for regular use.
+So far, we have been entering URLs manually to access our plugin views.
+That works for development, but it is not very friendly for regular use.
 In this step, we will add links to the NetBox navigation menu so users can reach our pages with a click.
 
 :blue_square: **Note:** If you skipped the previous step and you cloned `netbox-plugin-demo`, run `git checkout step07-templates`.

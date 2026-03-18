@@ -66,7 +66,7 @@ The `view_name` here is the name of the API view that will serve a single access
 We will create it later when we register our API viewsets and URLs.
 
 Next, remember the `rule_count` column we added for the table in Step 3. We can expose that value in the API too.
-This is a computed field, so we make it read only and we will annotate it in the view queryset.
+This is a computed field, so we make it read-only, and we will annotate it in the view queryset.
 
 ```python
     rule_count = serializers.IntegerField(read_only=True)
@@ -94,10 +94,10 @@ Now add the `Meta` class:
 
 A quick overview of some common fields:
 
-* `id` is the primary key. This is a must have for every serializer.
-* `display` is provided by `NetBoxModelSerializer`. It is read only, and returns a human friendly string representation of the object.
+* `id` is the primary key. This is a must-have for every serializer.
+* `display` is provided by `NetBoxModelSerializer`. It is read-only, and returns a human-friendly string representation of the object.
 * `tags` and `custom_fields` are provided by NetBox's model and serializer helpers.
-* `created` and `last_updated` come from `NetBoxModel` and are read only.
+* `created` and `last_updated` come from `NetBoxModel` and are read-only.
 
 :green_circle: **Tip:** The order in `fields` is the order you will see in the API response. Many NetBox serializers put `tags`, `custom_fields`, `created`, and `last_updated` near the end.
 
