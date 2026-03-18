@@ -228,8 +228,10 @@ class AccessListRuleType(NetBoxObjectType):
     access_list: Annotated[
         'AccessListType', strawberry.lazy('netbox_access_lists.graphql.types')
     ]
-    source_prefix: Annotated['PrefixType', strawberry.lazy('ipam.graphql.types')]
-    destination_prefix: Annotated['PrefixType', strawberry.lazy('ipam.graphql.types')]
+    source_prefix: Annotated['PrefixType', strawberry.lazy('ipam.graphql.types')] | None
+    destination_prefix: (
+        Annotated['PrefixType', strawberry.lazy('ipam.graphql.types')] | None
+    )
 ```
 
 A few notes:
@@ -237,6 +239,7 @@ A few notes:
 * `AccessListType.rules` exposes the reverse foreign key relationship.
 * `AccessListRuleType.access_list` exposes the forward foreign key relationship.
 * `source_prefix` and `destination_prefix` reuse NetBox core GraphQL types.
+* Both prefix fields are optional because they are nullable in the model.
 
 ## Create the query
 
