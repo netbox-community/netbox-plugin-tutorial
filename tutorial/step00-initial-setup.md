@@ -12,7 +12,7 @@ Before we start writing our plugin, we need a working local NetBox development e
 
 Plugin development requires a local installation of NetBox.
 
-If you don't already have NetBox installed, follow the official [installation instructions](https://netbox.readthedocs.io/en/stable/installation/). For development, installing from the Git repository is recommended because it makes it easy to switch between NetBox versions/tags.
+If you don't already have NetBox installed, follow the official [installation instructions](https://netboxlabs.com/docs/netbox/installation/). For development, installing from the Git repository is recommended because it makes it easy to switch between NetBox versions/tags.
 
 :green_circle: **Tip:** If you're setting this up *only* for local development, you can usually stop once you can successfully start the development server (e.g. `manage.py runserver`). You can always come back later and complete any optional production hardening steps.
 

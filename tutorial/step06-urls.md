@@ -180,7 +180,7 @@ urlpatterns = (
 
 ### Adding changelog views manually
 
-NetBox supports automatic [change logging](https://netbox.readthedocs.io/en/stable/additional-features/change-logging/).
+NetBox supports automatic [change logging](https://netboxlabs.com/docs/netbox/features/change-logging/).
 You can see this in the Changelog tab on many object detail pages.
 
 If you are using the decorator-based approach, these extra views are often handled for you.
