@@ -19,7 +19,7 @@ Before attempting to create a plugin, please assess your personal ability. Plugi
 ### Contents
 
 * [Step 0: Initial Setup](/tutorial/step00-initial-setup.md) :arrow_left: Start here!
-* [Step 1: Plugin Configuration](/tutorial/step01-plugin-configuration.md)
+* [Step 1: Plugin Definition](/tutorial/step01-plugin-definition.md)
 * [Step 2: Models](/tutorial/step02-models.md)
 * [Step 3: Tables](/tutorial/step03-tables.md)
 * [Step 4: Forms](/tutorial/step04-forms.md)

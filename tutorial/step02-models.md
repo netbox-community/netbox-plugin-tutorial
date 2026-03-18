@@ -6,7 +6,7 @@ A model is a Python class that represents a table in the PostgreSQL database.
 Each instance of a model class maps to a single row in that table.
 We use models instead of raw SQL because working with Python objects is usually simpler, safer, and easier to evolve over time.
 
-:blue_square: **Note:** If you skipped the previous step, and you cloned the `netbox-plugin-demo` repository, you can catch up by running `git checkout step01-plugin-configuration`.
+:blue_square: **Note:** If you skipped the previous step, and you cloned the `netbox-plugin-demo` repository, you can catch up by running `git checkout step01-plugin-definition`.
 
 ## Create the Models
 
@@ -631,6 +631,6 @@ In the next steps, we will expose this functionality in the NetBox user interfac
 
 <div align="center">
 
-:arrow_left: [Step 1: Plugin Configuration](/tutorial/step01-plugin-configuration.md) | [Step 3: Tables](/tutorial/step03-tables.md) :arrow_right:
+:arrow_left: [Step 1: Plugin Definition](/tutorial/step01-plugin-definition.md) | [Step 3: Tables](/tutorial/step03-tables.md) :arrow_right:
 
 </div>

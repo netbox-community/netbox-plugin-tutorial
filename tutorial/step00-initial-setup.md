@@ -80,7 +80,7 @@ In this tutorial, we'll use the **manual approach**, building up a project that 
 
 :blue_square: **Note:** You don't need to create all of this up front. We'll add files and directories as we go.
 
-If you prefer to use the cookiecutter template, you can skip ahead to [Step 1](/tutorial/step01-plugin-configuration.md). Keep in mind that cookiecutter generates a slightly different (and more complete) project layout, which is especially helpful if you plan to publish your plugin on PyPI.
+If you prefer to use the cookiecutter template, you can skip ahead to [Step 1](/tutorial/step01-plugin-definition.md). Keep in mind that cookiecutter generates a slightly different (and more complete) project layout, which is especially helpful if you plan to publish your plugin on PyPI.
 
 If you're following the manual approach and want a reference implementation to compare against, see the next section.
 
@@ -100,6 +100,6 @@ This completes our initial setup.
 
 <div align="center">
 
-[Step 1: Plugin Configuration](/tutorial/step01-plugin-configuration.md) :arrow_right:
+[Step 1: Plugin Definition](/tutorial/step01-plugin-definition.md) :arrow_right:
 
 </div>
