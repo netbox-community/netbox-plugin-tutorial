@@ -282,6 +282,7 @@ Add the following content:
       </div>
       {% include 'inc/panels/custom_fields.html' %}
       {% include 'inc/panels/tags.html' %}
+      {% include 'inc/panels/comments.html' %}
     </div>
     <div class="col col-md-6">
       <div class="card">

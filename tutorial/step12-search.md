@@ -77,14 +77,15 @@ class AccessListIndex(SearchIndex):
 
 #### AccessListRule fields
 
-For `AccessListRule`, the most useful free text field is `description`.
-We will index that:
+For `AccessListRule`, the most useful free text fields are `description` and `comments`.
+We will index both:
 
 ```python
 class AccessListRuleIndex(SearchIndex):
     model = AccessListRule
     fields = (
         ('description', 500),
+        ('comments', 5000),
     )
 ```
 
@@ -118,6 +119,7 @@ class AccessListRuleIndex(SearchIndex):
     model = AccessListRule
     fields = (
         ('description', 500),
+        ('comments', 5000),
     )
     display_attrs = (
         'access_list',
@@ -159,6 +161,7 @@ class AccessListRuleIndex(SearchIndex):
     model = AccessListRule
     fields = (
         ('description', 500),
+        ('comments', 5000),
     )
     display_attrs = (
         'access_list',

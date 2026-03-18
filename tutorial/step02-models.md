@@ -200,7 +200,7 @@ Now add destination prefix and destination ports, which mirror the source fields
     )
 ```
 
-Finally, add the rule action (required) and an optional description:
+Finally, add the rule action (required), an optional description and comments:
 
 ```python
     action = models.CharField(
@@ -208,6 +208,9 @@ Finally, add the rule action (required) and an optional description:
     )
     description = models.CharField(
         max_length=500,
+        blank=True,
+    )
+    comments = models.TextField(
         blank=True,
     )
 ```

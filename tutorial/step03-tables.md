@@ -190,6 +190,7 @@ class AccessListRuleTable(NetBoxTable):
             'destination_ports',
             'protocol',
             'action',
+            'comments',
             'actions',
         )
 ```
@@ -260,6 +261,7 @@ class AccessListRuleTable(NetBoxTable):
             'protocol',
             'action',
             'description',
+            'comments',
             'actions',
         )
         default_columns = (

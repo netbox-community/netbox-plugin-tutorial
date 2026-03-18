@@ -96,6 +96,7 @@ class AccessListRuleForm(NetBoxModelForm):
             'destination_ports',
             'protocol',
             'action',
+            'comments',
             'tags',
         )
 ```
@@ -194,6 +195,7 @@ class AccessListRuleForm(NetBoxModelForm):
             'destination_ports',
             'protocol',
             'action',
+            'comments',
             'tags',
         )
 ```
