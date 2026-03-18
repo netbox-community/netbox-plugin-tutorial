@@ -23,7 +23,7 @@ If you already have an idea for something that would make NetBox more useful for
 Begin small, keep it focused, and improve it step by step.
 That is how many good plugins start.
 
-If you plan to publish a plugin for others to use, it is strongly recommended to start with the [NetBox plugin cookiecutter template](https://github.com/netbox-community/netbox-plugin-cookiecutter).
+If you plan to publish a plugin for others to use, it is strongly recommended to start with the [NetBox plugin cookiecutter template](https://github.com/netbox-community/cookiecutter-netbox-plugin).
 It provides a production-ready project structure and includes many of the supporting pieces you will likely want in a real project, such as testing, linting, and contribution guidelines.
 
 In general, a production-ready plugin should include:
