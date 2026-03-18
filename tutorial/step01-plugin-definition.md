@@ -222,7 +222,9 @@ python -m pip install -e .
 
 Finally, we need to configure NetBox to enable our new plugin.
 
-Over in the NetBox installation path, open `netbox/netbox/configuration.py` and look for the `PLUGINS` parameter (it should be an empty list).
+In your NetBox installation, open `netbox/netbox/configuration.py` and locate the `PLUGINS` setting.
+This setting defines which plugins NetBox loads at startup.
+On a fresh installation, it should be an empty list.
 If it's not yet defined, go ahead and create it.
 
 Add the name of our plugin to this list:
