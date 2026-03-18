@@ -5,7 +5,7 @@ GraphQL is useful when you want to request exactly the fields you need, includin
 
 NetBox builds its GraphQL API using the [Strawberry GraphQL](https://github.com/strawberry-graphql/strawberry) and [Strawberry Django](https://github.com/strawberry-graphql/strawberry-django) libraries.
 
-:blue_square: **Note:** If you skipped the previous step, run `git checkout step09-rest-api` (in case you've cloned the repository `netbox-plugin-demo`).
+:blue_square: **Note:** If you skipped the previous step, run `git checkout step10-rest-api` (in case you've cloned the repository `netbox-plugin-demo`).
 
 Our GraphQL code will live in a `graphql/` package inside `netbox_access_lists/`.
 Create the directory and an `__init__.py` file:

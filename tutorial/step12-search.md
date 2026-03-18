@@ -6,7 +6,7 @@ NetBox global search is meant to help users quickly find objects by typing a few
 Under the hood, NetBox builds a small search index for each model that supports it.
 Each index tells NetBox which fields to cache for search and how important each field is.
 
-:blue_square: **Note:** If you skipped the previous step, run `git checkout step10-graphql` (if you cloned the repository `netbox-plugin-demo`).
+:blue_square: **Note:** If you skipped the previous step, run `git checkout step11-graphql` (if you cloned the repository `netbox-plugin-demo`).
 
 ## Create search indexes
 
