@@ -432,6 +432,9 @@ class AccessListRule(NetBoxModel):
         max_length=500,
         blank=True,
     )
+    comments = models.TextField(
+        blank=True,
+    )
 
     class Meta:
         ordering = ('access_list', 'index')
