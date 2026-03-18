@@ -237,14 +237,8 @@ For reference, your plugin project should now include `search.py`:
 └── README.md
 ```
 
-## Conclusion
-
-This completes the plugin development tutorial. Nice work!
-
-From here, a good next step is to review the NetBox plugin development documentation and start experimenting with a small plugin idea of your own.
-
 <div align="center">
 
-:arrow_left: [Step 11: GraphQL API](/tutorial/step11-graphql-api.md)
+:arrow_left: [Step 11: GraphQL API](/tutorial/step11-graphql-api.md) | [Step 13: Wrap Up](/tutorial/step13-wrap-up.md) :arrow_right:
 
 </div>
