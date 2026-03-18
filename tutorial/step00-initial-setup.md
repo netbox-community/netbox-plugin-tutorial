@@ -18,17 +18,20 @@ For development, installing from the Git repository is recommended because it ma
 
 :green_circle: **Tip:** If you're setting this up *only* for local development, you can usually stop once you can successfully start the development server (e.g. `manage.py runserver`). You can always come back later and complete any optional production hardening steps.
 
-Before you start developing, make sure NetBox is running in development mode with debugging enabled. From your NetBox installation root, edit `netbox/netbox/configuration.py` and set:
+Before you start developing, make sure NetBox is running with debugging and developer features enabled.
+From your NetBox installation root, edit `netbox/netbox/configuration.py` and set:
 
 ```python
 DEBUG = True
 DEVELOPER = True
 ```
 
-These settings ensure that:
+These settings serve different purposes:
 
-- static assets can be served by the development server
-- you'll get full tracebacks in the browser when an error occurs
+- `DEBUG = True` enables Django debug mode, which allows the development server to serve static assets and shows full tracebacks in the browser when an error occurs
+- `DEVELOPER = True` enables additional NetBox development features, such as migration and schema validation checks
+
+For more information about `DEVELOPER`, see the [NetBox documentation](https://netboxlabs.com/docs/netbox/configuration/development/#developer).
 
 :blue_square: **Note:** If NetBox is already running, restart the development server after changing these settings.
 
