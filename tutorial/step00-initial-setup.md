@@ -1,6 +1,7 @@
 # Step 0: Initial Setup
 
-Before we start writing our plugin, we need a working local NetBox development environment. In this step we'll:
+Before we start writing our plugin, we need a working local NetBox development environment.
+In this step we'll:
 
 - Install (or verify) a local NetBox dev setup
 - Enable development-friendly settings
@@ -12,7 +13,8 @@ Before we start writing our plugin, we need a working local NetBox development e
 
 Plugin development requires a local installation of NetBox.
 
-If you don't already have NetBox installed, follow the official [installation instructions](https://netboxlabs.com/docs/netbox/installation/). For development, installing from the Git repository is recommended because it makes it easy to switch between NetBox versions/tags.
+If you don't already have NetBox installed, follow the official [installation instructions](https://netboxlabs.com/docs/netbox/installation/).
+For development, installing from the Git repository is recommended because it makes it easy to switch between NetBox versions/tags.
 
 :green_circle: **Tip:** If you're setting this up *only* for local development, you can usually stop once you can successfully start the development server (e.g. `manage.py runserver`). You can always come back later and complete any optional production hardening steps.
 
@@ -34,7 +36,8 @@ These settings ensure that:
 
 ## Prepare the Plugin Development Environment
 
-A NetBox plugin is a standard Python package that contains a NetBox-specific Django application. Your plugin project should be structured according to the [Python Packaging User Guide](https://packaging.python.org/en/latest/tutorials/packaging-projects/).
+A NetBox plugin is a standard Python package that contains a NetBox-specific Django application.
+Your plugin project should be structured according to the [Python Packaging User Guide](https://packaging.python.org/en/latest/tutorials/packaging-projects/).
 
 There are two ways to follow this tutorial:
 
@@ -80,13 +83,15 @@ In this tutorial, we'll use the **manual approach**, building up a project that 
 
 :blue_square: **Note:** You don't need to create all of this up front. We'll add files and directories as we go.
 
-If you prefer to use the cookiecutter template, you can skip ahead to [Step 1](/tutorial/step01-plugin-definition.md). Keep in mind that cookiecutter generates a slightly different (and more complete) project layout, which is especially helpful if you plan to publish your plugin on PyPI.
+If you prefer to use the cookiecutter template, you can skip ahead to [Step 1](/tutorial/step01-plugin-definition.md).
+Keep in mind that cookiecutter generates a slightly different (and more complete) project layout, which is especially helpful if you plan to publish your plugin on PyPI.
 
 If you're following the manual approach and want a reference implementation to compare against, see the next section.
 
 ### Demo Git repository (optional)
 
-The demo repository contains the completed plugin project from this tutorial. Each tutorial step builds on the previous one, and the demo repo includes a snapshot of the code at each step as a separate Git branch.
+The demo repository contains the completed plugin project from this tutorial.
+Each tutorial step builds on the previous one, and the demo repo includes a snapshot of the code at each step as a separate Git branch.
 
 To clone the demo repository, `cd` to your preferred workspace (your home directory is fine) and run:
 
